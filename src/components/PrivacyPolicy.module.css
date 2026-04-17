@@ -1,0 +1,41 @@
+.TOSContainer{
+    background-color: #e7ecf3;
+    border-radius: 1rem;
+    padding: 1.5rem 1rem;
+    margin: 1rem 0px;
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    
+}
+.TOS{
+    padding-right: 2rem;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.TOS::-webkit-scrollbar {
+  width: 5px;
+}
+
+.TOS::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.TOS::-webkit-scrollbar-thumb {
+  background: #9eacb4;
+  border-radius: 10px;
+}
+.TOS::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.TOS::-webkit-scrollbar-button{
+    background-color: #ffffff;
+    height: 5px;
+    border-radius: 10px;
+}
+

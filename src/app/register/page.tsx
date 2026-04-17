@@ -1,8 +1,10 @@
 "use client"
 import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Checkbox, colors } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import PrivacyPolicy from '@/components/PrivacyPolicy';
+import PrivacyPolicyContainer from '@/components/PrivacyPolicyContainer';
 
 import userRegister from '@/libs/userRegister';
 
@@ -12,6 +14,9 @@ export default function RegisterPage() {
   const [telephone, setTelephone] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [acceptTOS, setAccept] = useState(false);
+
+  const [viewTOS, setView] = useState(false);
   
   const router = useRouter();
 
@@ -21,6 +26,11 @@ export default function RegisterPage() {
 
     if (!name || !email || !telephone || !password) {
       setErrorMsg('Please fill in all fields (กรุณากรอกข้อมูลให้ครบ)');
+      return;
+    }
+
+    if(!acceptTOS){
+      setErrorMsg('Please agree to our Privacy Policy')
       return;
     }
 
@@ -42,6 +52,7 @@ export default function RegisterPage() {
   };
 
   return (
+    
     <main className="min-h-screen bg-slate-50 pt-28 pb-10 px-4 flex flex-col items-center justify-center">
       <div className="w-full max-w-md bg-white p-10 rounded-2xl shadow-md border border-slate-200">
         <div className="text-left mb-8">
@@ -94,6 +105,19 @@ export default function RegisterPage() {
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
           />
 
+          <p className="text-sm">
+            <Checkbox
+              checked={acceptTOS}
+              onChange={(_, checked) => setAccept(checked)}
+              color="default"
+            />
+            I agree to the{' '}
+            <span className="text-sky-600 hover:text-sky-800 transition-colors cursor-pointer" onClick={()=>setView(true)}>
+              {"Privacy Policy"} 
+            </span>
+          </p>
+          
+
           <Button 
             type="submit"
             variant="contained" 
@@ -103,6 +127,12 @@ export default function RegisterPage() {
           </Button>
         </form>
 
+        <div>
+          <div className="mt-3 text-center text-xs text-slate-500" style={{color:acceptTOS?"#64748b":"red"}}>
+            By creating an account, you agree to our Privacy Policy.
+          </div>          
+        </div>
+
         <div className="mt-8 text-center text-sm text-slate-500">
           Already have an account?{' '}
           <Link href="/auth/signin" className="text-sky-600 hover:text-sky-800 font-bold transition-colors">
@@ -110,6 +140,21 @@ export default function RegisterPage() {
           </Link>
         </div>
       </div>
+    
+    {/*TOS*/}
+      <PrivacyPolicyContainer
+        isOpen = {viewTOS}
+        onClose= {()=>setView(false)}
+        onAccept={()=>{
+
+          setAccept(true);
+          setView(false);
+          console.log(acceptTOS);
+        }}
+      >
+        <PrivacyPolicy/>
+      </PrivacyPolicyContainer>
     </main>
+
   );
 }
