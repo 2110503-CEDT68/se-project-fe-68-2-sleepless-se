@@ -36,3 +36,9 @@ export interface Hotel {
 export interface BookingFormProps {
   initialHotelId: string;
 }
+
+export interface FormErrors {
+  name?: string;
+  tel?: string;
+  submit?: string;
+}
