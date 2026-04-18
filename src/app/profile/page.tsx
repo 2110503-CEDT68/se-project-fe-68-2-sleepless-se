@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import getUserProfile from '@/libs/getUserProfile';
 import { FormErrors } from '../../../interface';
+import updateProfile from '@/libs/updateProfile';
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update} = useSession();
   const router = useRouter();
 
   const [userName, setUserName] = useState('');
@@ -88,15 +89,21 @@ export default function ProfilePage() {
     // Run validation
     if (!validateForm()) return;
 
+    if (!session?.user?.token) {
+      setErrors({ submit: "Authentication token missing. Please sign in again." });
+      return;
+    }
+
     setIsSaving(true);
     try {
-      // TODO: Call update API endpoint here
-      // await updateUserProfile(session.user.token, formData);
+      await updateProfile(formData.name, formData.tel, session.user.token);
 
-      // On success, update the display states and exit edit mode
       setUserName(formData.name);
       setUserTel(formData.tel);
       setIsEditing(false);
+
+      await update({ name: formData.name });
+
     } catch (error) {
       console.error("Failed to update profile:", error);
       setErrors({ submit: "Failed to save changes. Please try again." });
