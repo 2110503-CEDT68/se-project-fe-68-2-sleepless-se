@@ -1,13 +1,48 @@
 'use client'
 
-import { useState } from 'react';
-import type { ReviewModalProps } from '../../interface';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
-export default function ReviewModal({ isOpen, onClose, onSubmit }: ReviewModalProps) {
+import getUserProfile from '@/libs/getUserProfile';
+import SignInPrompt from './SignInPrompt';
+
+interface ReviewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (rating: number, comment: string) => void;
+}
+
+export default function ReviewCard({ isOpen, onClose, onSubmit }: ReviewModalProps) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userTel, setUserTel] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
+  useEffect(() => {
+      const fetchProfile = async () => {
+        if (session?.user?.token) {
+          try {
+            const profileData = await getUserProfile(session.user.token);
+            setUserName(profileData.data?.name || profileData.name || '');
+            setUserTel(profileData.data?.tel || profileData.tel || '');
+            setUserEmail(profileData.data?.email || session.user?.email || '');
+          } catch (error) {
+            console.error("Failed to fetch user profile:", error);
+          }
+        }
+      };
+      if (status === "authenticated") fetchProfile();
+  }, [session, status]);
+
+  if (status === "unauthenticated") {
+    return <SignInPrompt />;
+  }
   if (!isOpen) return null;
 
   const handleSubmit = () => {
@@ -15,13 +50,20 @@ export default function ReviewModal({ isOpen, onClose, onSubmit }: ReviewModalPr
       alert("Please select a star rating");
       return;
     }
+    
+    // Pass the data back up to the parent component
     onSubmit(rating, comment);
+    
+    // Reset state after submission
+    alert('Submitted successfully!');
     setRating(0);
     setHoverRating(0);
     setComment('');
+    onClose();
   };
 
   const handleCancel = () => {
+    // Reset state and close
     setRating(0);
     setHoverRating(0);
     setComment('');
@@ -29,20 +71,24 @@ export default function ReviewModal({ isOpen, onClose, onSubmit }: ReviewModalPr
   };
 
   return (
+    // darken the screen behind the modal
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+      
+      {/* Modal Card */}
       <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
         
         <h2 className="text-xl font-extrabold text-gray-900">Your Review</h2>
         
+        {/* Star Rating */}
         <div 
           className="flex space-x-1" 
-          onMouseLeave={() => setHoverRating(0)}
+          onMouseLeave={() => setHoverRating(0)} // Reset hover when mouse leaves the star area
         >
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
               type="button"
-              className="focus:outline-none transition-transform hover:scale-110"
+              className="!bg-transparent hover:!bg-transparent border-none !p-1 focus:outline-none transition-transform hover:scale-110"
               onMouseEnter={() => setHoverRating(star)}
               onClick={() => setRating(star)}
             >
@@ -60,6 +106,7 @@ export default function ReviewModal({ isOpen, onClose, onSubmit }: ReviewModalPr
           ))}
         </div>
 
+        {/* Comment Text Area */}
         <textarea
           rows={3}
           value={comment}

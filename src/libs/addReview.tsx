@@ -16,12 +16,15 @@ export default async function addReview(
     body: JSON.stringify({
       hotel: hotelId,                    
       rating: rating,
-      comment: comment
+      comment: comment,
+      token: token
     }),
   });
 
   if (!res.ok) {
     const errorData = await res.json();
+    console.log("BACKEND ERROR DETAILS:", errorData);
+    
     throw new Error(errorData.message || "Failed to add review");
   }
 
