@@ -7,6 +7,10 @@ export default async function updateHotel(
     telephone: string;
     email: string;
     photoURL: string;
+    province:string;
+    region: string;
+    postalcode: string;
+    district: string;
   },
   token: string
 ) {
@@ -22,6 +26,11 @@ export default async function updateHotel(
         hotel_name: updatedData.name,
         address: updatedData.location,
         telephone: updatedData.telephone, 
+        district: updatedData.district,
+        description: updatedData.description,
+        regoin: updatedData.region,
+        postalcode: updatedData.postalcode,
+        province: updatedData.province
       }),
     }
   );

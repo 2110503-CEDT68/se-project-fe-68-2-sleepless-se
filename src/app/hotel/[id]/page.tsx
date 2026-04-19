@@ -25,6 +25,10 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
     const [hotelName,setHotel] = useState("Dummy Hotel");
     const [hotelDescription,setDescription] = useState("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ");
     const [hotelLocation,setLocation] = useState("dummy Location");
+    const [hotelDistrict,setDistrict] = useState("Dummy District");
+    const [postalCode,setPostal] = useState("Dummy Postal");
+    const [province,setProvince] = useState("DummyProvince");
+    const [region, setRegion] = useState("Dummy region");
     const [hotelTelephone,setTelephone] = useState("+66xxxxxxxxxxx");
     const [hotelEmail, setEmail] = useState("Dummy Email");
     const [hotelPhotoURL, setPhotoURL] = useState("Photo");
@@ -44,6 +48,10 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 setLocation(hotelData.address || hotelData.region || "Location not specified");
                 setTelephone(hotelData.telephone);
                 setEmail(hotelData.email || "No email provided");
+                setRegion(hotelData.region);
+                setDistrict(hotelData.district);
+                setPostal(hotelData.postalcode);
+                setProvince(hotelData.province);
                 // setPhotoURL(hotelData.picture);
                 
             } catch (error) {
@@ -85,6 +93,11 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
     telephone: string;
     email: string;
     photoURL: string;
+    province:string;
+    region: string;
+    postalcode: string;
+    district: string;
+
     };
 
    const handleEdit = async (updatedData: HotelUpdateData) => {
@@ -108,6 +121,10 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
         setLocation(updatedData.location);
         setTelephone(updatedData.telephone);
         setEmail(updatedData.email);
+        setProvince(updatedData.province);
+        setDistrict(updatedData.district);
+        setPostal(updatedData.postalcode);
+        setRegion(updatedData.region);
 
         setIsEdit(false); 
 
@@ -127,7 +144,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                         <strong>hotelPhotoURL</strong>
                     </div>
                     <div className={styles.InformationWrapper}>
-                        <h2>📍 {hotelLocation}</h2>
+                        <h2>📍 {hotelLocation} {hotelDistrict} {province} {region} {postalCode}</h2>
                         <h2>📞 {hotelTelephone}</h2>
                         <h2>✉️ {hotelEmail}</h2>
                         <p>{hotelDescription}</p>
@@ -169,6 +186,10 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                     location={hotelLocation}
                     photoURL={hotelPhotoURL}
                     telephone={hotelTelephone}
+                    region={region}
+                    district={hotelDistrict}
+                    province={province}
+                    postalcode={postalCode}
                     onSave={handleEdit}
                     onCancel={() => setIsEdit(false)}
                 />
