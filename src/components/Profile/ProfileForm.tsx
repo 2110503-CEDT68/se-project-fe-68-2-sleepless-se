@@ -4,26 +4,12 @@ import { useState } from 'react';
 import type { ProfileFormProps, FormErrors } from '../../../interface';
 import updateUserProfile from '@/libs/updateUserProfile';
 
-<<<<<<< Updated upstream
-interface ProfileFormProps {
-  initialName: string;
-  initialTel: string;
-  initialColor: string; 
-  token: string;
-  onSuccess: (newName: string, newTel: string, newColor: string) => void;
-  onCancel: () => void;
-}
-
 export default function ProfileForm({ initialName, initialTel, initialColor, token, onSuccess, onCancel }: ProfileFormProps) {
   const [formData, setFormData] = useState({ 
     name: initialName, 
     tel: initialTel, 
     color: initialColor || '#0ea5e9' 
   });
-=======
-export default function ProfileForm({ initialName, initialTel, token, onSuccess, onCancel }: ProfileFormProps) {
-  const [formData, setFormData] = useState({ name: initialName, tel: initialTel });
->>>>>>> Stashed changes
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -61,14 +47,9 @@ export default function ProfileForm({ initialName, initialTel, token, onSuccess,
 
     setIsSaving(true);
     try {
-<<<<<<< Updated upstream
       await updateUserProfile(formData.name, formData.tel, formData.color, token);
       
       onSuccess(formData.name, formData.tel, formData.color);
-=======
-      await updateUserProfile(formData.name, formData.tel, token);
-      onSuccess(formData.name, formData.tel);
->>>>>>> Stashed changes
     } catch (error: any) {
       console.error("Failed to update profile:", error);
       setErrors({ submit: error.message || "Failed to save changes. Please try again." });

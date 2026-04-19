@@ -117,8 +117,9 @@ export interface ProfileViewProps {
 export interface ProfileFormProps {
   initialName: string;
   initialTel: string;
+  initialColor: string; 
   token: string;
-  onSuccess: (newName: string, newTel: string) => void;
+  onSuccess: (newName: string, newTel: string, newColor: string) => void;
   onCancel: () => void;
 }
 
