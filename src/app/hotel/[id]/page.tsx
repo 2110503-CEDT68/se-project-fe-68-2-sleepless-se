@@ -98,26 +98,38 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                     <Link href={`/booking?hotel=${id}`}>
                             Book Now  
                     </Link>
-                    {/*Conditionally displaying these two between user's role*/}
-                    <button>
-                        Edit
-                    </button>
-                    <button onClick={() => setIsModalOpen(true)}>
-                        Review
-                    </button>
-                </div>
+                {/* Only display these options if a user is logged in (session exists) */}
+                {session && (
+                    <>
+                        
+                        {/* Example of Role-Based Rendering for the Edit button */}
+                        {/* Replace 'admin' with whatever role designates a manager/admin in your app */}
+                        {session.user?.role === "admin" && (
+                            <button>
+                                Edit
+                            </button>
+                        )}
+
+                        <button onClick={() => setIsModalOpen(true)}>
+                            Review
+                        </button>
+                    </>
+                )}
+            </div>
             </div>
 
         <HotelEditPanel />
             <Link href={`/hotel/${id}/reviews`} className={styles.ButtonWrapper}>
                 All reviews
             </Link>
+        {session && (
+            <ReviewModal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+                onSubmit={handleReviewSubmit} 
+            />
+        )}
         
-        <ReviewModal 
-            isOpen={isModalOpen} 
-            onClose={() => setIsModalOpen(false)} 
-            onSubmit={handleReviewSubmit} 
-        />
 
         </main>
   )
