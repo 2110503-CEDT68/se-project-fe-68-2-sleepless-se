@@ -13,6 +13,8 @@ import HotelEditPanel from "@/components/Hotel/HotelEditPanel";
 import ReviewModal from "@/components/ReviewModal";
 import addReview from "@/libs/addReview";
 import getHotel from "@/libs/getHotel";
+import { describe } from "node:test";
+import updateHotel from "@/libs/updateHotels";
 
 export default function hotelPage({ params }: { params: Promise<{ id: string }>;}) {
     const { data: session, status } = useSession();
@@ -27,6 +29,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
     const [hotelPhotoURL, setPhotoURL] = useState("Photo");
     const [hotelTotalRating,setTotalRating] = useState(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [idEditOpen, setIsEdit] = useState(false);
 
     useEffect(() => {
         const fetchHotelData = async () => {
@@ -74,6 +77,44 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
         }
    };
 
+   type HotelUpdateData = {
+    name: string;
+    description: string;
+    location: string;
+    telephone: string;
+    email: string;
+    photoURL: string;
+    };
+
+   const handleEdit = async (updatedData: HotelUpdateData) => {
+    if (!session?.user?.token) {
+        alert("You must be logged in");
+        return;
+    }
+
+    try {
+        const result = await updateHotel(
+        id,
+        updatedData,
+        session.user.token
+        );
+
+        console.log("Updated:", result);
+
+        // update UI
+        setHotel(updatedData.name);
+        setDescription(updatedData.description);
+        setLocation(updatedData.location);
+        setTelephone(updatedData.telephone);
+        setEmail(updatedData.email);
+
+        setIsEdit(false); // close panel ✅
+
+    } catch (err) {
+        console.error("Update failed:", err);
+    }
+    };
+
 
     return(
         <main className="min-h-screen bg-slate-50 pt-28 pb-10 px-4 flex flex-col items-center ">
@@ -105,7 +146,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                         {/* Example of Role-Based Rendering for the Edit button */}
                         {/* Replace 'admin' with whatever role designates a manager/admin in your app */}
                         {session.user?.role === "admin" && (
-                            <button>
+                            <button onClick={()=> setIsEdit(true)}>
                                 Edit
                             </button>
                         )}
@@ -118,14 +159,18 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             </div>
             </div>
 
-        <HotelEditPanel
-            name={hotelName}
-            description={hotelDescription}
-            email={hotelEmail}
-            location={hotelLocation}
-            photoURL={hotelPhotoURL}
-            telephone={hotelTelephone}
+            { idEditOpen && (
+            <HotelEditPanel
+                name={hotelName}
+                description={hotelDescription}
+                email={hotelEmail}
+                location={hotelLocation}
+                photoURL={hotelPhotoURL}
+                telephone={hotelTelephone}
+                onSave={handleEdit}
+                onCancel={() => setIsEdit(false)}
             />
+            )}
 
             <Link href={`/hotel/${id}/reviews`} className={styles.ButtonWrapper}>
                 All reviews
