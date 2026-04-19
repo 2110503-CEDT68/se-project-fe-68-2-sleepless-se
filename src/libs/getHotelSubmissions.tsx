@@ -9,7 +9,7 @@ export default async function getHotelSubmissions(
     });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch bookings");
+        throw new Error("Failed to fetch hotel submissions");
     }
 
     return await response.json();
