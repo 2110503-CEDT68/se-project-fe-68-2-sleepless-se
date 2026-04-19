@@ -1,7 +1,7 @@
 export default async function getReviews(hotelId: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/hotels/${hotelId}/reviews`,
+      `https://se-be-9w6y.onrender.com/api/v1/hotels/${hotelId}/reviews`,
       { cache: 'no-store' }
     );
     if (!res.ok) return { data: [], avgRating: null };

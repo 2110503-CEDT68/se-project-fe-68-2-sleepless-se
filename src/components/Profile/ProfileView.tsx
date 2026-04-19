@@ -1,33 +1,22 @@
 'use client'
 
 import { signOut } from 'next-auth/react';
-import ProfileIcon from './ProfileIcon';
+import type { ProfileViewProps } from '../../../interface';
 
-interface ProfileViewProps {
-  name: string;
-  email: string;
-  tel: string;
-  color: string;
-  onEdit: () => void;
-}
-
-export default function ProfileView({ name, email, tel, color, onEdit }: ProfileViewProps) {
+export default function ProfileView({ name, email, tel, onEdit }: ProfileViewProps) {
   const displayName = name || 'No Name Provided';
   const initial = displayName !== 'No Name Provided' ? displayName.charAt(0).toUpperCase() : '?';
 
   return (
     <div className="flex flex-col items-center space-y-4 mt-8 w-full">
-      
-      <ProfileIcon 
-        name={name} 
-        color={color} 
-        className="w-24 h-24 text-4xl border-4 border-white ring-1 ring-gray-100" 
-      />
+      <div className="w-24 h-24 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 text-4xl font-bold shadow-sm border-4 border-white ring-1 ring-gray-100">
+        {initial}
+      </div>
 
       <div className="text-center w-full space-y-1">
         <h3 className="text-xl font-bold text-sky-800">{displayName}</h3>
-          <p className="text-sky-700">{email}</p>
-          {tel && <p className="text-sky-700 text-sm">📞 {tel}</p>}
+        <p className="text-sky-700">{email}</p>
+        {tel && <p className="text-sky-700 text-sm">📞 {tel}</p>}
       </div>
 
       <div className="mt-8 w-full pt-6 border-t border-gray-100 space-y-3">

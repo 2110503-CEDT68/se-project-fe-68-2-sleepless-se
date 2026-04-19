@@ -21,7 +21,7 @@ export default function ModerationActions({
     setError(null);
     try {
       const res = await fetch(
-        `https://hotelbooking-kwtf.onrender.com/api/v1/reviews/${reviewId}${path}`,
+        `https://se-be-9w6y.onrender.com/api/v1/reviews/${reviewId}${path}`,
         { method, headers: { Authorization: `Bearer ${token}` } }
       );
       if (!res.ok) {

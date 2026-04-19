@@ -1,5 +1,5 @@
-export default async function updateProfile(name: string, tel: string, color:string, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/updateprofile`, {
+export default async function updateProfile(name: string, tel: string, token: string) {
+  const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/auth/updateprofile`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -8,7 +8,6 @@ export default async function updateProfile(name: string, tel: string, color:str
     body: JSON.stringify({
       name: name,
       tel: tel,
-      profileImageUrl: color
     }),
   });
 

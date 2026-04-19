@@ -25,10 +25,10 @@ export interface Hotel {
   _id: string;
   hotel_name: string;
   address: string;
-  district?: string;   
-  province?: string;   
+  district?: string;
+  province?: string;
   telephone: string;
-  region?: string;       
+  region?: string;
   postalcode?: string;
 }
 
@@ -102,6 +102,8 @@ export interface RatingDistributionBarProps {
   starCounts: Record<number, number>;
   totalCount: number;
   avgRating: number | null;
+  onStarClick?: (star: number) => void;
+  selectedStar?: number | null;
 }
 
 // ─── Profile ──────────────────────────────────────────────────────────────────
@@ -121,11 +123,14 @@ export interface ProfileFormProps {
 }
 
 // ─── Moderation ───────────────────────────────────────────────────────────────
-export type ReviewStatus = 'active' | 'hidden' | 'rejected';
+export type ReviewStatus = "active" | "hidden" | "rejected";
 
 export interface ModerationActionsProps {
   reviewId: string;
   currentStatus: ReviewStatus;
   token: string;
-  onActionComplete: (reviewId: string, action: 'delete' | 'hide' | 'unhide' | 'reject' | 'approve') => void;
+  onActionComplete: (
+    reviewId: string,
+    action: "delete" | "hide" | "unhide" | "reject" | "approve",
+  ) => void;
 }

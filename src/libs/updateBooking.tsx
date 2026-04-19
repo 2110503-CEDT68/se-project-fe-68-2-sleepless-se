@@ -1,5 +1,5 @@
 export default async function updateBooking(id: string, checkInDate: string, checkOutDate: string, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/bookings/${id}`, {
+  const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/bookings/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

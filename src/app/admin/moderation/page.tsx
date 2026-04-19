@@ -64,7 +64,7 @@ export default function ModerationPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('https://hotelbooking-kwtf.onrender.com/api/v1/reviews', {
+      const res = await fetch('https://se-be-9w6y.onrender.com/api/v1/reviews/all', {
         headers: { Authorization: `Bearer ${(session?.user as any)?.token}` },
       });
       if (!res.ok) throw new Error('Failed to fetch reviews');
