@@ -1,4 +1,4 @@
-export default async function updateProfile(name: string, tel: string, token: string) {
+export default async function updateProfile(name: string, tel: string, color:string, token: string) {
   const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/auth/updateprofile`, {
     method: "PUT",
     headers: {
@@ -8,6 +8,7 @@ export default async function updateProfile(name: string, tel: string, token: st
     body: JSON.stringify({
       name: name,
       tel: tel,
+      profileImageUrl: color
     }),
   });
 

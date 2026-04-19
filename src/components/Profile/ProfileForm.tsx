@@ -7,13 +7,18 @@ import updateUserProfile from '@/libs/updateUserProfile';
 interface ProfileFormProps {
   initialName: string;
   initialTel: string;
+  initialColor: string; 
   token: string;
-  onSuccess: (newName: string, newTel: string) => void;
+  onSuccess: (newName: string, newTel: string, newColor: string) => void;
   onCancel: () => void;
 }
 
-export default function ProfileForm({ initialName, initialTel, token, onSuccess, onCancel }: ProfileFormProps) {
-  const [formData, setFormData] = useState({ name: initialName, tel: initialTel });
+export default function ProfileForm({ initialName, initialTel, initialColor, token, onSuccess, onCancel }: ProfileFormProps) {
+  const [formData, setFormData] = useState({ 
+    name: initialName, 
+    tel: initialTel, 
+    color: initialColor || '#0ea5e9' 
+  });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -52,9 +57,9 @@ export default function ProfileForm({ initialName, initialTel, token, onSuccess,
 
     setIsSaving(true);
     try {
-      await updateUserProfile(formData.name, formData.tel, token);
-      // Pass the new data back up to the parent page
-      onSuccess(formData.name, formData.tel);
+      await updateUserProfile(formData.name, formData.tel, formData.color, token);
+      
+      onSuccess(formData.name, formData.tel, formData.color);
     } catch (error: any) {
       console.error("Failed to update profile:", error);
       setErrors({ submit: error.message || "Failed to save changes. Please try again." });
@@ -95,6 +100,22 @@ export default function ProfileForm({ initialName, initialTel, token, onSuccess,
           className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.tel ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
         />
         {errors.tel && <p className="mt-1 text-sm text-red-600">{errors.tel}</p>}
+      </div>
+
+      {/* 5. Added Color Picker Input */}
+      <div className="w-full">
+        <label htmlFor="color" className="block text-sm font-medium text-sky-900">Profile Color</label>
+        <div className="mt-1 flex items-center space-x-3">
+          <input
+            type="color"
+            id="color"
+            name="color"
+            value={formData.color}
+            onChange={handleInputChange}
+            className="h-10 w-14 rounded cursor-pointer border border-gray-300 p-0.5"
+          />
+          <span className="text-sm text-gray-500 font-mono">{formData.color.toUpperCase()}</span>
+        </div>
       </div>
 
       <div className="flex space-x-3 w-full pt-4 border-t border-gray-100">

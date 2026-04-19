@@ -4,9 +4,32 @@ import React from 'react';
 import TopMenuItem from './TopMenuItem';
 import { useSession } from 'next-auth/react'; 
 import Link from 'next/link'; 
+import ProfileIcon from './Profile/ProfileIcon';
+import { useState, useEffect } from 'react';
+import getUserProfile from '@/libs/getUserProfile';
 
 export default function TopMenu() { 
   const { data: session, status } = useSession();
+
+  const [profileColor, setProfileColor] = useState('#0ea5e9');
+
+  useEffect(() => {
+    const fetchColor = async () => {
+      if (session?.user?.token) {
+        try {
+          const profileData = await getUserProfile(session.user.token);
+          const userColor = profileData.data?.profileImageUrl || profileData.profileImageUrl;
+          if (userColor) {
+            setProfileColor(userColor);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user color:", error);
+        }
+      }
+    };
+
+    if (status === "authenticated") fetchColor();
+  }, [session, status]);
 
   return (
     <div className="h-20 bg-white/90 backdrop-blur-md text-slate-800 fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 shadow-sm border-b border-slate-200 transition-all">
@@ -45,9 +68,12 @@ export default function TopMenu() {
             {session.user?.name && (
               <Link href="/profile">
                 <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer">
-                  <div className="w-9 h-9 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold shadow-sm">
-                    {session.user.name.charAt(0).toUpperCase()}
-                  </div>
+                  
+                  <ProfileIcon 
+                    name={session.user.name} 
+                    color={profileColor} 
+                  />
+
                   <span className="text-sm font-semibold text-slate-700 hidden sm:block">
                     {session.user.name}
                   </span>
