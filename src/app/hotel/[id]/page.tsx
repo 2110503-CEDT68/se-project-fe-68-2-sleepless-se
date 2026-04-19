@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState,useEffect } from "react"
-import styles from "./page.module.css"
-import { use } from "react"; 
+import { useState, useEffect } from "react";
+import styles from "./page.module.css";
+import { use } from "react";
 import { Rating } from "@mui/material";
 import Link from "next/link";
 
@@ -13,9 +13,7 @@ import HotelEditPanel from "@/components/Hotel/HotelEditPanel";
 import ReviewModal from "@/components/ReviewModal";
 import addReview from "@/libs/addReview";
 
-
-export default function hotelPage({ params }: {params: Promise<{ hotelId: string }>;}) {
-
+export default function hotelPage({ params }: { params: Promise<{ hotelId: string }>;}) {
     const { data: session, status } = useSession();
     const router = useRouter();
     
@@ -101,9 +99,23 @@ export default function hotelPage({ params }: {params: Promise<{ hotelId: string
                     />
                 </div>
             </div>
-            
-            <HotelEditPanel/>
+        
+        <div className={styles.ButtonWrapper}>
+          <Link href={`/booking?hotel=${hotelId}`}>Book Now</Link>
+          {/*Conditionally displaying these two between user's role*/}
+          <button>Edit</button>
+          <button>Review</button>
+          <ReviewModal 
+                        isOpen={isModalOpen} 
+                        onClose={() => setIsModalOpen(false)} 
+                        onSubmit={handleReviewSubmit} 
+            />
+        </div>
 
+        <HotelEditPanel />
+            <Link href={"/hotel/${id}/reviews"} className={styles.ButtonWrapper}>
+                All reviews
+            </Link>
         </main>
-    )
+  )
 };
