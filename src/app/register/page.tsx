@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { TextField, Button, Checkbox, colors } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import PrivacyPolicy from '@/components/PrivacyPolicy';
-import PrivacyPolicyContainer from '@/components/PrivacyPolicyContainer';
+import PrivacyPolicy from '@/components/PrivacyPolicy/PrivacyPolicy';
+import PrivacyPolicyContainer from '@/components/PrivacyPolicy/PrivacyPolicyContainer';
 
 import userRegister from '@/libs/userRegister';
 
