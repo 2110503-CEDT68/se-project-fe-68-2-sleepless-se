@@ -23,7 +23,7 @@ export default async function updateHotel(
     description: updatedData.description
   });
   const res = await fetch(
-    `https://se-be-9w6y.onrender.com/api/v1/hotels/${id}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/hotels/${id}`,
     {
       method: "PUT",
       headers: {

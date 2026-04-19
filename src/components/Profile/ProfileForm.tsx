@@ -1,13 +1,9 @@
 'use client'
 
 import { useState } from 'react';
-import type { ProfileFormProps, FormErrors } from '../../../interface';
+import { FormErrors } from '@../../../interface';
 import updateUserProfile from '@/libs/updateUserProfile';
 
-<<<<<<< HEAD
-export default function ProfileForm({ initialName, initialTel, token, onSuccess, onCancel }: ProfileFormProps) {
-  const [formData, setFormData] = useState({ name: initialName, tel: initialTel });
-=======
 interface ProfileFormProps {
   initialName: string;
   initialTel: string;
@@ -23,7 +19,6 @@ export default function ProfileForm({ initialName, initialTel, initialColor, tok
     tel: initialTel, 
     color: initialColor || '#0ea5e9' 
   });
->>>>>>> 4d91257336a9ed1d0e17ad90bc434de26365c155
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -36,7 +31,7 @@ export default function ProfileForm({ initialName, initialTel, initialColor, tok
       newErrors.name = 'Name must be at least 2 characters';
     }
 
-    const phoneRegex = /^[0-9]{10}$/;
+    const phoneRegex = /^[0-9]{10}$/; 
     if (!formData.tel.trim()) {
       newErrors.tel = 'Phone number is required';
     } else if (!phoneRegex.test(formData.tel.replace(/[- ]/g, ''))) {
@@ -50,6 +45,7 @@ export default function ProfileForm({ initialName, initialTel, initialColor, tok
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -61,14 +57,9 @@ export default function ProfileForm({ initialName, initialTel, initialColor, tok
 
     setIsSaving(true);
     try {
-<<<<<<< HEAD
-      await updateUserProfile(formData.name, formData.tel, token);
-      onSuccess(formData.name, formData.tel);
-=======
       await updateUserProfile(formData.name, formData.tel, formData.color, token);
       
       onSuccess(formData.name, formData.tel, formData.color);
->>>>>>> 4d91257336a9ed1d0e17ad90bc434de26365c155
     } catch (error: any) {
       console.error("Failed to update profile:", error);
       setErrors({ submit: error.message || "Failed to save changes. Please try again." });

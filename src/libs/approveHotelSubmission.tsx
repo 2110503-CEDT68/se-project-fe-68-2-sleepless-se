@@ -12,7 +12,7 @@ export default async function approveHotelSubmission(
     throw new Error("No authentication token provided");
   }
 
-  const response = await fetch(`https://se-be-9w6y.onrender.com/api/v1/admin/hotel-submissions/${id}/approve`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/hotel-submissions/${id}/approve`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,

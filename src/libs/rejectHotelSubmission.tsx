@@ -16,7 +16,7 @@ export default async function rejectHotelSubmission(
     throw new Error("A rejection reason is required");
   }
 
-  const response = await fetch(`https://se-be-9w6y.onrender.com/api/v1/admin/hotel-submissions/${id}/reject`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/hotel-submissions/${id}/reject`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
