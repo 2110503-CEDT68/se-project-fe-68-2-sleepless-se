@@ -27,7 +27,7 @@ export default function HotelCard({ hotelId, hotelName, address, telephone, imag
           <p className="text-sm text-slate-500 mb-4">📞 {telephone}</p>
                 
           <div className="mt-auto">
-          <Link href={`/booking?hotel=${hotelId}`}>
+          <Link href={`/hotel/${hotelId}`}>
             <button className="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 rounded-xl font-medium transition-colors">
               View & Book Now
             </button>
