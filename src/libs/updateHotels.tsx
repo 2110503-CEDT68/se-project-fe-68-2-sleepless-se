@@ -14,6 +14,14 @@ export default async function updateHotel(
   },
   token: string
 ) {
+    console.log("SENDING DATA:", {
+    hotel_name: updatedData.name,
+    address: updatedData.location,
+    province: updatedData.province,
+    region: updatedData.region,
+    postalcode: updatedData.postalcode,
+    description: updatedData.description
+  });
   const res = await fetch(
     `https://se-be-9w6y.onrender.com/api/v1/hotels/${id}`,
     {

@@ -57,7 +57,7 @@ export default function HotelEditPanel({name,description,location,telephone,emai
     setDistrict(district||"");
     setPostal(postalcode||"");
     setProvince(province||"");
-}, [name, description, location, telephone, email, photoURL,district,province,region]);
+}, [email]);
     
     return(
         <div className={styles.StyleWrapper}>
