@@ -3,10 +3,15 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useSession } from 'next-auth/react';
 import getHotelSubmissions from "@/libs/getHotelSubmissions";
+import approveHotelSubmission from "@/libs/approveHotelSubmission";
+import rejectHotelSubmission from "@/libs/rejectHotelSubmission";
 
 interface OverlayProps {
   isOpen: boolean;
+  isProcessing: boolean;
   onClose: () => void;
+  onApprove: () => void;
+  onReject: () => void;
   children: React.ReactNode;
 }
 
@@ -32,19 +37,38 @@ interface HotelSubmission {
   hotelData: HotelData;
 }
 
-const Overlay: React.FC<OverlayProps> = ({ isOpen, onClose, children }) => {
+const Overlay: React.FC<OverlayProps> = ({ 
+  isOpen, 
+  isProcessing, 
+  onClose, 
+  onApprove, 
+  onReject, 
+  children 
+}) => {
   if (!isOpen) return null;
 
   return (
-    <div style={overlayStyles} onClick={onClose}>
+    <div style={overlayStyles} onClick={!isProcessing ? onClose : undefined}>
       <div style={contentStyles} onClick={(e) => e.stopPropagation()}>
         {children}<br/>
         <div className="flex space-x-3 w-full md:w-auto ml-auto mt-4">
-          <button onClick={onClose} className="w-full md:w-auto bg-rose-500 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm">
-            Reject
+          <button 
+            onClick={onReject} 
+            disabled={isProcessing}
+            className={`w-full md:w-auto px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm text-white ${
+              isProcessing ? 'bg-slate-400 cursor-not-allowed' : 'bg-rose-500 hover:bg-rose-700'
+            }`}
+          >
+            {isProcessing ? 'Processing...' : 'Reject'}
           </button>
-          <button onClick={onClose} className="w-full md:w-auto bg-sky-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm">
-            Approve
+          <button 
+            onClick={onApprove} 
+            disabled={isProcessing}
+            className={`w-full md:w-auto px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm text-white ${
+              isProcessing ? 'bg-slate-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-amber-600'
+            }`}
+          >
+            {isProcessing ? 'Processing...' : 'Approve'}
           </button>
         </div>
       </div>
@@ -78,17 +102,16 @@ export default function HotelSubmissionPage() {
   const { data: session } = useSession(); 
 
   const [selectedSubmission, setSelectedSubmission] = useState<HotelSubmission | null>(null);
-
   const [submissions, setSubmissions] = useState<HotelSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false); // Prevents spam clicking
 
   useEffect(() => {
     const fetchSubmissions = async () => {
       setLoading(true);
       try {
         const token = (session as any)?.user?.token || localStorage.getItem('token'); 
-        
         const result = await getHotelSubmissions(token);
         
         if (result.success) {
@@ -103,6 +126,49 @@ export default function HotelSubmissionPage() {
 
     fetchSubmissions();
   }, [session]);
+
+  const handleApprove = async () => {
+    if (!selectedSubmission) return;
+    setIsProcessing(true);
+    
+    try {
+      const token = (session as any)?.user?.token || localStorage.getItem('token'); 
+      await approveHotelSubmission(selectedSubmission._id, token);
+      
+      // Remove approved item from list and close modal
+      setSubmissions(prev => prev.filter(sub => sub._id !== selectedSubmission._id));
+      setSelectedSubmission(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to approve submission');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!selectedSubmission) return;
+    
+    // Prompt the admin for a required rejection reason
+    const reason = window.prompt("Please enter a reason for rejecting this submission:");
+    if (!reason) {
+      return; // Stop execution if they click cancel or submit an empty string
+    }
+
+    setIsProcessing(true);
+    
+    try {
+      const token = (session as any)?.user?.token || localStorage.getItem('token'); 
+      await rejectHotelSubmission(selectedSubmission._id, reason, token);
+      
+      // Remove rejected item from list and close modal
+      setSubmissions(prev => prev.filter(sub => sub._id !== selectedSubmission._id));
+      setSelectedSubmission(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to reject submission');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (loading) return <div className="p-10 text-center">Loading submissions...</div>;
   if (error) return <div className="p-10 text-center text-red-500">Error: {error}</div>;
@@ -159,10 +225,12 @@ export default function HotelSubmissionPage() {
           </Link>
         </div>
 
-        {/* Single Overlay outside the map loop */}
         <Overlay 
           isOpen={!!selectedSubmission} 
+          isProcessing={isProcessing}
           onClose={() => setSelectedSubmission(null)}
+          onApprove={handleApprove}
+          onReject={handleReject}
         >
           {selectedSubmission && (
             <div className="flex flex-col gap-3">
