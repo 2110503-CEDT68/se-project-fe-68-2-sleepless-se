@@ -30,6 +30,12 @@ export default function TopMenu() {
             pageRef="/cart" 
           />
           )}
+          
+          {session?.user?.role === "admin" && (
+          <TopMenuItem 
+            title="Hotel Submissions"
+            pageRef="/hotel-submissions" 
+          />)}
         </nav>
       </div>
       
