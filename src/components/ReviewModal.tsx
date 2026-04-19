@@ -55,9 +55,11 @@ export default function ReviewCard({ isOpen, onClose, onSubmit }: ReviewModalPro
     onSubmit(rating, comment);
     
     // Reset state after submission
+    alert('Submitted successfully!');
     setRating(0);
     setHoverRating(0);
     setComment('');
+    onClose();
   };
 
   const handleCancel = () => {
@@ -86,7 +88,7 @@ export default function ReviewCard({ isOpen, onClose, onSubmit }: ReviewModalPro
             <button
               key={star}
               type="button"
-              className="focus:outline-none transition-transform hover:scale-110"
+              className="!bg-transparent hover:!bg-transparent border-none !p-1 focus:outline-none transition-transform hover:scale-110"
               onMouseEnter={() => setHoverRating(star)}
               onClick={() => setRating(star)}
             >

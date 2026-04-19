@@ -105,12 +105,6 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                     <button onClick={() => setIsModalOpen(true)}>
                         Review
                     </button>
-    
-                    <ReviewModal 
-                        isOpen={isModalOpen} 
-                        onClose={() => setIsModalOpen(false)} 
-                        onSubmit={handleReviewSubmit} 
-                    />
                 </div>
             </div>
 
@@ -118,6 +112,13 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             <Link href={`/hotel/${id}/reviews`} className={styles.ButtonWrapper}>
                 All reviews
             </Link>
+        
+        <ReviewModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+            onSubmit={handleReviewSubmit} 
+        />
+
         </main>
   )
 };
