@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { FormErrors } from '@../../../interface';
-import updateUserProfile from '@/libs/updateProfile';
+import updateUserProfile from '@/libs/updateUserProfile';
 
 interface ProfileFormProps {
   initialName: string;
