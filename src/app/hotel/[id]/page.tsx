@@ -13,7 +13,6 @@ import HotelEditPanel from "@/components/Hotel/HotelEditPanel";
 import ReviewModal from "@/components/ReviewModal";
 import addReview from "@/libs/addReview";
 import getHotel from "@/libs/getHotel";
-import { describe } from "node:test";
 import updateHotel from "@/libs/updateHotels";
 import HotelEditModal from "@/components/Hotel/HotelEditModal";
 
@@ -73,8 +72,10 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             );
             
             setIsModalOpen(false);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to submit review", error);
+            const errorMessage = error?.message || "Failed to submit review. Please try again.";
+            alert(`Error: ${errorMessage}`);
         }
    };
 
