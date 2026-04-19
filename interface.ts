@@ -24,13 +24,29 @@ export interface VenueJson {
 export interface Hotel {
   _id: string;
   hotel_name: string;
+  description: string;
   address: string;
-  district?: string;
-  province?: string;
+  email: string;
+  district: string;
+  province: string;
   telephone: string;
-  region?: string;
-  postalcode?: string;
+  region: string;
+  postalcode: string;
 }
+
+export type HotelUpdateData = {
+    name: string;
+    description: string;
+    location: string;
+    telephone: string;
+    email: string;
+    photoURL: string;
+    province:string;
+    region: string;
+    postalcode: string;
+    district: string;
+
+};
 
 export interface HotelJson {
   success: boolean;

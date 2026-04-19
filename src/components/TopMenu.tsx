@@ -69,10 +69,10 @@ export default function TopMenu() {
               <Link href="/profile">
                 <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer">
                   
-                  <ProfileIcon 
+                  {/* <ProfileIcon 
                     name={session.user.name} 
                     color={profileColor} 
-                  />
+                  /> */}
 
                   <span className="text-sm font-semibold text-slate-700 hidden sm:block">
                     {session.user.name}
