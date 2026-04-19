@@ -108,7 +108,15 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 </div>
             </div>
 
-        <HotelEditPanel />
+        <HotelEditPanel
+            name={hotelName}
+            description={hotelDescription}
+            email={hotelEmail}
+            location={hotelLocation}
+            photoURL={hotelPhotoURL}
+            telephone={hotelTelephone}
+            />
+
             <Link href={`/hotel/${id}/reviews`} className={styles.ButtonWrapper}>
                 All reviews
             </Link>
