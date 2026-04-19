@@ -55,7 +55,6 @@ export default function ReviewCard({ isOpen, onClose, onSubmit }: ReviewModalPro
     onSubmit(rating, comment);
     
     // Reset state after submission
-    alert('Submitted successfully!');
     setRating(0);
     setHoverRating(0);
     setComment('');

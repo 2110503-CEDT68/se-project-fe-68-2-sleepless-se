@@ -13,7 +13,6 @@ import HotelEditPanel from "@/components/Hotel/HotelEditPanel";
 import ReviewModal from "@/components/ReviewModal";
 import addReview from "@/libs/addReview";
 import getHotel from "@/libs/getHotel";
-import { describe } from "node:test";
 import updateHotel from "@/libs/updateHotels";
 import HotelEditModal from "@/components/Hotel/HotelEditModal";
 
@@ -46,7 +45,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 setHotel(hotelData.hotel_name || "Name not found.");
                 setDescription(hotelData.description || "No description available.");
                 setLocation(hotelData.address || hotelData.region || "Location not specified");
-                setTelephone(hotelData.telephone);
+                setTelephone(hotelData.telephone || "No phone number provided.");
                 setEmail(hotelData.email || "No email provided");
                 setRegion(hotelData.region);
                 setDistrict(hotelData.district);
@@ -81,8 +80,10 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             );
             
             setIsModalOpen(false);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to submit review", error);
+            const errorMessage = error?.message || "Failed to submit review. Please try again.";
+            alert(`Error: ${errorMessage}`);
         }
    };
 
