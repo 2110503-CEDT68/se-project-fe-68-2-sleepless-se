@@ -1,16 +1,8 @@
 'use client'
 
 import { useState } from 'react';
-import { FormErrors } from '@../../../interface';
+import type { ProfileFormProps, FormErrors } from '../../../interface';
 import updateUserProfile from '@/libs/updateUserProfile';
-
-interface ProfileFormProps {
-  initialName: string;
-  initialTel: string;
-  token: string;
-  onSuccess: (newName: string, newTel: string) => void;
-  onCancel: () => void;
-}
 
 export default function ProfileForm({ initialName, initialTel, token, onSuccess, onCancel }: ProfileFormProps) {
   const [formData, setFormData] = useState({ name: initialName, tel: initialTel });
@@ -26,7 +18,7 @@ export default function ProfileForm({ initialName, initialTel, token, onSuccess,
       newErrors.name = 'Name must be at least 2 characters';
     }
 
-    const phoneRegex = /^[0-9]{10}$/; 
+    const phoneRegex = /^[0-9]{10}$/;
     if (!formData.tel.trim()) {
       newErrors.tel = 'Phone number is required';
     } else if (!phoneRegex.test(formData.tel.replace(/[- ]/g, ''))) {
@@ -40,7 +32,6 @@ export default function ProfileForm({ initialName, initialTel, token, onSuccess,
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -53,7 +44,6 @@ export default function ProfileForm({ initialName, initialTel, token, onSuccess,
     setIsSaving(true);
     try {
       await updateUserProfile(formData.name, formData.tel, token);
-      // Pass the new data back up to the parent page
       onSuccess(formData.name, formData.tel);
     } catch (error: any) {
       console.error("Failed to update profile:", error);

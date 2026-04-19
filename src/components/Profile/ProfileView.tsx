@@ -1,13 +1,7 @@
 'use client'
 
 import { signOut } from 'next-auth/react';
-
-interface ProfileViewProps {
-  name: string;
-  email: string;
-  tel: string;
-  onEdit: () => void;
-}
+import type { ProfileViewProps } from '../../../interface';
 
 export default function ProfileView({ name, email, tel, onEdit }: ProfileViewProps) {
   const displayName = name || 'No Name Provided';
