@@ -53,10 +53,10 @@ export default function HotelEditPanel({name,description,location,telephone,emai
     setTelephone(telephone || "");
     setEmail(email || "");
     setPhotoURL(photoURL || "");
-    setRegion(region);
-    setDistrict(district);
-    setPostal(postalcode);
-    setProvince(province);
+    setRegion(region||"");
+    setDistrict(district||"");
+    setPostal(postalcode||"");
+    setProvince(province||"");
 }, [name, description, location, telephone, email, photoURL,district,province,region]);
     
     return(
