@@ -79,7 +79,14 @@ export default function AllReviewsPage({ params }: { params: { id: string } }) {
                   : "bg-white text-slate-600 border-slate-300 hover:border-yellow-400"
               }`}
             >
-              {"★".repeat(star)} {star} stars
+              <Rating
+                value={star}
+                precision={0.5}
+                readOnly
+                size="small"
+                max={Math.ceil(star)}
+              />
+              <span>{star} stars</span>
             </button>
           ))}
         </div>
