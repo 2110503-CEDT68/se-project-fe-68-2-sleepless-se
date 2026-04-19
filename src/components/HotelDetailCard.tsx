@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClick }: any) {
   return (
     <div className="bg-white rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row gap-8 items-center border border-slate-100">
-      <div className="w-full md:w-72 aspect-[4/3] bg-[#E2E8F0] rounded-[1.5rem] overflow-hidden shrink-0 flex items-center justify-center">
-        {hotelData.picture || hotelData.image ? (
-          <img src={hotelData.picture || hotelData.image} alt="hotel" className="w-full h-full object-cover" />
+      <div className="w-full md:w-72 aspect-[4/3] bg-[#E2E8F0] rounded-[1.5rem] overflow-hidden shrink-0 flex items-center justify-center relative">
+        {hotelData.picture || hotelData.imageURL ? (
+          <Image src={hotelData.picture || hotelData.imageURL} alt="hotel" className="w-full h-full object-cover" fill/>
         ) : (
           <span className="font-bold text-slate-400 text-xl">No Photo</span>
         )}
