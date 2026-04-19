@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import HotelCard from './HotelCard';
 import getHotels from '@/libs/getHotels';
+import getReviews from '@/libs/getReviews';
 import { Hotel } from '../../interface';
 
 const hotelImageMap: Record<string, string> = {
@@ -27,52 +28,74 @@ const hotelImageMap: Record<string, string> = {
   "Mountain Inn": "/img/mountain_inn.jpg"
 };
 
-
 const getHotelImage = (hotelName: string) => {
-  return hotelImageMap[hotelName] || "/img/sukhothai.jpg"; 
+  return hotelImageMap[hotelName] || "/img/sukhothai.jpg";
 };
 
+interface HotelRating {
+  avgRating: number;
+  reviewCount: number;
+}
+
 export default function HotelCatalog() {
-    const [hotels, setHotels] = useState<Hotel[]>([]);
-    const [loading, setLoading] = useState(true);
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [ratings, setRatings] = useState<Record<string, HotelRating>>({});
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      const fetchHotelsData = async () => {
-        try {
-            const hotelList = await getHotels(); 
-            setHotels(hotelList);
-        } catch (error) {
-            console.error("Error in component:", error);
-        } finally {
-            setLoading(false);
-        }
-      };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const hotelList = await getHotels();
+        setHotels(hotelList);
 
-      fetchHotelsData();
-    }, []);
+        // Fetch all reviews in parallel
+        const reviewResults = await Promise.all(
+          hotelList.map((hotel: Hotel) => getReviews(hotel._id))
+        );
 
-    if (loading) {
-      return <div className="text-center text-slate-500 mt-10">Loading amazing hotels for you... 🌊</div>;
-    }
+        const ratingMap: Record<string, HotelRating> = {};
+        hotelList.forEach((hotel: Hotel, i: number) => {
+          const res = reviewResults[i];
+          ratingMap[hotel._id] = {
+            avgRating: res?.avgRating ? parseFloat(res.avgRating) : 0,
+            reviewCount: res?.data?.length ?? 0,
+          };
+        });
+        setRatings(ratingMap);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-8">
-        <h2 className="text-3xl font-extrabold text-sky-900 mb-8 text-center">
-          Explore Our Top Hotels
-        </h2>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {hotels.map((hotel) => (
-            <HotelCard 
-              key={hotel._id} 
-              hotelId={hotel._id}
-              hotelName={hotel.hotel_name}
-              address={hotel.address}
-              telephone={hotel.telephone}
-              imageUrl={getHotelImage(hotel.hotel_name)} 
-            />
-          ))}
-        </div>
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="text-center text-slate-500 mt-10">Loading amazing hotels for you... 🌊</div>;
+  }
+
+  return (
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      <h2 className="text-3xl font-extrabold text-sky-900 mb-8 text-center">
+        Explore Our Top Hotels
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {hotels.map((hotel) => (
+          <HotelCard
+            key={hotel._id}
+            hotelId={hotel._id}
+            hotelName={hotel.hotel_name}
+            address={hotel.address}
+            telephone={hotel.telephone}
+            imageUrl={getHotelImage(hotel.hotel_name)}
+            avgRating={ratings[hotel._id]?.avgRating ?? 0}
+            reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
+          />
+        ))}
       </div>
-    );
+    </div>
+  );
 }

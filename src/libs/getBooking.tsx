@@ -3,7 +3,7 @@ export default async function getBooking(id: string, token: string) {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`
-    }
+    },cache: 'no-store'
   });
 
   if (!res.ok) {

@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< Updated upstream
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 import { use } from "react";
@@ -8,20 +9,30 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { useRouter } from 'next/navigation';
+=======
+import { useState, useEffect, use } from "react";
+>>>>>>> Stashed changes
 import { useSession } from 'next-auth/react';
 
-import HotelEditPanel from "@/components/Hotel/HotelEditPanel";
+import HotelDetailCard from "@/components/HotelDetailCard"; // Component ใหม่
+import StarFilterTabs from "@/components/StarFilterTabs";
 import ReviewModal from "@/components/ReviewModal";
+import ReviewCard from "@/components/ReviewCard";
+import RatingDistributionBar from "@/components/RatingDistributionBar";
 import addReview from "@/libs/addReview";
 import getHotel from "@/libs/getHotel";
+<<<<<<< Updated upstream
 import updateHotel from "@/libs/updateHotels";
 import HotelEditModal from "@/components/Hotel/HotelEditModal";
+=======
+import getReviews from "@/libs/getReviews";
+import getBookings from "@/libs/getBookings";
+>>>>>>> Stashed changes
 
-export default function hotelPage({ params }: { params: Promise<{ id: string }>;}) {
-    const { data: session, status } = useSession();
-    const router = useRouter();
-    
+export default function HotelPage({ params }: { params: Promise<{ id: string }> }) {
+    const { data: session } = useSession();
     const { id } = use(params);
+<<<<<<< Updated upstream
     const [hotelName,setHotel] = useState("Dummy Hotel");
     const [hotelDescription,setDescription] = useState("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ");
     const [hotelLocation,setLocation] = useState("dummy Location");
@@ -35,14 +46,28 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
     const [hotelTotalRating,setTotalRating] = useState(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditOpen, setIsEdit] = useState(false);
+=======
+    
+    const [isLoading, setIsLoading] = useState(true);
+    const [hotelData, setHotelData] = useState<any>(null);
+    const [reviewsData, setReviewsData] = useState<any[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedStar, setSelectedStar] = useState<number | null>(null);
+    const [hasBooked, setHasBooked] = useState(false);
+>>>>>>> Stashed changes
 
-    useEffect(() => {
-        const fetchHotelData = async () => {
-            try {
-                const hotelData = await getHotel(id);
+    const [reviewStats, setReviewStats] = useState({
+        totalCount: 0,
+        avgRating: 0,
+        starCounts: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } as Record<number, number>
+    });
 
-                console.log("BACKEND RETURNED THIS DATA:", hotelData);
+    const fetchHotelAndReviews = async () => {
+        try {
+            const hData = await getHotel(id);
+            setHotelData(hData);
 
+<<<<<<< Updated upstream
                 setHotel(hotelData.hotel_name || "Name not found.");
                 setDescription(hotelData.description || "No description available.");
                 setLocation(hotelData.address || hotelData.region || "Location not specified");
@@ -56,35 +81,53 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 
             } catch (error) {
                 console.error("Error loading hotel:", error);
-            }
-        };
+=======
+            const rData = await getReviews(id);
+            if (rData && rData.data) {
+                const reviews = rData.data;
+                setReviewsData(reviews);
 
-        if (id) {
-            fetchHotelData();
-        }
-    }, [id]);
+                const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+                let totalRating = 0;
+                reviews.forEach((r: any) => {
+                    if (r.rating >= 1 && r.rating <= 5) {
+                        counts[r.rating]++;
+                        totalRating += r.rating;
+                    }
+                });
+                setReviewStats({
+                    totalCount: reviews.length,
+                    avgRating: reviews.length > 0 ? totalRating / reviews.length : 0,
+                    starCounts: counts
+                });
+>>>>>>> Stashed changes
+            }
+        } catch (error) { console.error(error); } finally { setIsLoading(false); }
+    };
+
+    const checkUserBooking = async () => {
+        if (!session?.user?.token) return;
+        try {
+            const bookingsRes = await getBookings(session.user.token);
+            const bookings: any[] = bookingsRes?.data ?? [];
+            const booked = bookings.some((b: any) => (b.hotel?._id || b.hotel) === id);
+            setHasBooked(booked);
+        } catch { setHasBooked(false); }
+    };
+
+    useEffect(() => { if (id) fetchHotelAndReviews(); }, [id]);
+    useEffect(() => { if (session?.user?.token && id) checkUserBooking(); }, [session, id]);
 
     useEffect(() => {
     console.log("PHOTO URL UPDATED:", hotelPhotoURL);
     }, [hotelPhotoURL]);
 
     const handleReviewSubmit = async (rating: number, comment: string) => {
-        console.log("User submitted:", { rating, comment });
-            
-        if (!session || !session.user || !session.user.token) {
-            alert("You must be logged in to leave a review.");
-                return; 
-        }
-
+        if (!session?.user?.token) return;
         try {
-            await addReview(
-                id, 
-                rating, 
-                comment,   
-                session.user.token
-            );
-            
+            await addReview(id, rating, comment, session.user.token);
             setIsModalOpen(false);
+<<<<<<< Updated upstream
         } catch (error: any) {
             console.error("Failed to submit review", error);
             const errorMessage = error?.message || "Failed to submit review. Please try again.";
@@ -217,6 +260,93 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
         )}
         
 
+=======
+            fetchHotelAndReviews();
+        } catch (error: any) { alert(error.message || "Failed to submit review."); }
+    };
+
+    const filteredReviews = selectedStar 
+        ? reviewsData.filter(r => r.rating === selectedStar) 
+        : reviewsData;
+
+    if (isLoading) return <div className="pt-32 text-center font-bold text-slate-400 animate-pulse">Loading...</div>;
+    if (!hotelData) return null;
+
+    return (
+        <main className="min-h-screen bg-[#EEF2F6] pt-24 pb-12 px-4">
+            <div className="max-w-5xl mx-auto space-y-8">
+                
+                {/* 1. ใช้ Component HotelDetailCard ที่แยกมา */}
+                <HotelDetailCard 
+                    hotelData={hotelData} 
+                    id={id} 
+                    hasBooked={hasBooked} 
+                    onReviewClick={() => setIsModalOpen(true)} 
+                />
+
+                {/* 2. Rating & Reviews Section */}
+                <div className="bg-white rounded-[2.5rem] p-10 shadow-sm">
+                    <h2 className="text-2xl font-black text-slate-800 mb-8">คะแนนรีวิวจากผู้เข้าพัก</h2>
+                    
+                    {reviewStats.totalCount > 0 ? (
+                        <>
+                            <div className="mb-10 pb-8 border-b border-slate-50">
+                                <RatingDistributionBar 
+                                    starCounts={reviewStats.starCounts}
+                                    totalCount={reviewStats.totalCount}
+                                    avgRating={reviewStats.avgRating}
+                                />
+                            </div>
+
+                            {/* ส่วน Filter Tabs ที่แยกเป็น Component */}
+                            <StarFilterTabs 
+                                selectedStar={selectedStar}
+                                onSelectStar={setSelectedStar}
+                                starCounts={reviewStats.starCounts}
+                            />
+
+                            <div className="space-y-4 mt-10">
+                                {filteredReviews.length > 0 ? (
+                                    filteredReviews.map((review, idx) => (
+                                        <ReviewCard 
+                                            key={review._id || idx} 
+                                            hotelId={id}
+                                            reviewId={review._id}
+                                            userName={typeof review.user === 'object' ? review.user?.name : 'Anonymous'}
+                                            comment={review.comment}
+                                            rating={review.rating}
+                                            status={review.status}
+                                            authorId={typeof review.user === 'object' ? review.user?._id : review.user}
+                                            currentUserId={(session?.user as any)?.id}
+                                            currentUserRole={(session?.user as any)?.role}
+                                            token={session?.user?.token}
+                                            onRefresh={fetchHotelAndReviews}
+                                        />
+                                    ))
+                                ) : (
+                                    <div className="py-20 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400">
+                                        ยังไม่มีรีวิวสำหรับคะแนนชุดนี้
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-center py-20 bg-slate-50 rounded-3xl">
+                            <div className="text-6xl mb-4 opacity-20">💬</div>
+                            <h3 className="text-xl font-bold text-slate-400">ยังไม่มีรีวิวสำหรับโรงแรมนี้</h3>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {session && (
+                <ReviewModal 
+                    isOpen={isModalOpen} 
+                    onClose={() => setIsModalOpen(false)} 
+                    onSubmit={handleReviewSubmit} 
+                />
+            )}
+>>>>>>> Stashed changes
         </main>
-  )
-};
+    );
+}

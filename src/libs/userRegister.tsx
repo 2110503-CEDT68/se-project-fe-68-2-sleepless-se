@@ -1,16 +1,15 @@
 export default async function userRegister(userData: any) {
-  const res = await fetch('https://se-be-9w6y.onrender.com/api/v1/auth/register', {
+  const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    // ส่งข้อมูลที่รับมาไปให้ Backend
     body: JSON.stringify({
       name: userData.name,
       email: userData.email,
-      tel: userData.telephone, 
+      tel: userData.telephone,
       password: userData.password,
-      role: 'user' 
+      role: 'user'
     }),
   });
 

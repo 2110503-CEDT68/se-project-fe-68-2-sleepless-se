@@ -13,7 +13,11 @@ export default async function getHotelSubmissions(
   }
 
   // Construct the URL with the query parameter if it exists
+<<<<<<< Updated upstream
   const baseUrl = `https://se-be-9w6y.onrender.com/api/v1/admin/hotel-submissions`;
+=======
+  const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/hotel-submissions`;
+>>>>>>> Stashed changes
   const fetchUrl = status ? `${baseUrl}?status=${status}` : baseUrl;
 
   const response = await fetch(fetchUrl, {

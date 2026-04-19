@@ -4,6 +4,7 @@ export default async function getBookings(token: string) {
         headers: {
             "Authorization": `Bearer ${token}`,
         },
+        cache: 'no-store'
     });
 
     if (!response.ok) {
