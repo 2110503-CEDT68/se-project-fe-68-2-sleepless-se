@@ -1,18 +1,48 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
-interface ReviewModalProps {
+import getUserProfile from '@/libs/getUserProfile';
+import SignInPrompt from './SignInPrompt';
+
+interface ReviewCardProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (rating: number, comment: string) => void;
 }
 
-export default function ReviewModal({ isOpen, onClose, onSubmit }: ReviewModalProps) {
+export default function ReviewCard({ isOpen, onClose, onSubmit }: ReviewCardProps) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userTel, setUserTel] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
+  useEffect(() => {
+      const fetchProfile = async () => {
+        if (session?.user?.token) {
+          try {
+            const profileData = await getUserProfile(session.user.token);
+            setUserName(profileData.data?.name || profileData.name || '');
+            setUserTel(profileData.data?.tel || profileData.tel || '');
+            setUserEmail(profileData.data?.email || session.user?.email || '');
+          } catch (error) {
+            console.error("Failed to fetch user profile:", error);
+          }
+        }
+      };
+      if (status === "authenticated") fetchProfile();
+  }, [session, status]);
+
+  if (status === "unauthenticated") {
+    return <SignInPrompt />;
+  }
   if (!isOpen) return null;
 
   const handleSubmit = () => {
@@ -39,7 +69,7 @@ export default function ReviewModal({ isOpen, onClose, onSubmit }: ReviewModalPr
   };
 
   return (
-    // Fixed overlay background to darken the screen behind the modal
+    // darken the screen behind the modal
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       
       {/* Modal Card */}
