@@ -28,7 +28,7 @@ export default async function updateHotel(
         telephone: updatedData.telephone, 
         district: updatedData.district,
         description: updatedData.description,
-        regoin: updatedData.region,
+        region: updatedData.region,
         postalcode: updatedData.postalcode,
         province: updatedData.province
       }),
