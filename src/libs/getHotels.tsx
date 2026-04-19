@@ -1,6 +1,6 @@
 export default async function getHotels() {
     try {
-        const res = await fetch(`https://hotelbooking-kwtf.onrender.com/api/v1/hotels`);
+        const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/hotels`);
         
         if (!res.ok) {
             throw new Error("Failed to fetch hotels");

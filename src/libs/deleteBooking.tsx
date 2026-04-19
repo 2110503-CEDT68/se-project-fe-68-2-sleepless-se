@@ -1,5 +1,5 @@
 export default async function deleteBooking(id: string, token: string) {
-    const response = await fetch(`https://hotelbooking-kwtf.onrender.com/api/v1/bookings/${id}`, {
+    const response = await fetch(`https://se-be-9w6y.onrender.com/api/v1/bookings/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${token}`,

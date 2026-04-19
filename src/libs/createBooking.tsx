@@ -10,7 +10,7 @@ export default async function createBooking(
   checkOut.setDate(checkOut.getDate() + numOfNights); // เอาวันเช็คอิน + จำนวนคืน
 
   // 2. ส่ง Request ไปยัง Backend
-  const res = await fetch(`https://hotelbooking-kwtf.onrender.com/api/v1/bookings`, {
+  const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/bookings`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

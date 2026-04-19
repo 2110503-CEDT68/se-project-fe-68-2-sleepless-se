@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import getUserProfile from '@/libs/getUserProfile';
 import SignInPrompt from './SignInPrompt';
 
-interface ReviewCardProps {
+interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (rating: number, comment: string) => void;
 }
 
-export default function ReviewCard({ isOpen, onClose, onSubmit }: ReviewCardProps) {
+export default function ReviewCard({ isOpen, onClose, onSubmit }: ReviewModalProps) {
   const { data: session, status } = useSession();
   const router = useRouter();
 

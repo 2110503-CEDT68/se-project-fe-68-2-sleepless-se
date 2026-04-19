@@ -1,5 +1,5 @@
 export default async function updateProfile(name: string, tel: string, token: string) {
-  const res = await fetch(`https://hotelbooking-kwtf.onrender.com/api/v1/auth/updateprofile`, {
+  const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/auth/updateprofile`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

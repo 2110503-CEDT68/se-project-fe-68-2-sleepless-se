@@ -12,12 +12,13 @@ import { useSession } from 'next-auth/react';
 import HotelEditPanel from "@/components/Hotel/HotelEditPanel";
 import ReviewModal from "@/components/ReviewModal";
 import addReview from "@/libs/addReview";
+import getHotel from "@/libs/getHotel";
 
-export default function hotelPage({ params }: { params: Promise<{ hotelId: string }>;}) {
+export default function hotelPage({ params }: { params: Promise<{ id: string }>;}) {
     const { data: session, status } = useSession();
     const router = useRouter();
     
-    const { hotelId } = use(params);
+    const { id } = use(params);
     const [hotelName,setHotel] = useState("Dummy Hotel");
     const [hotelDescription,setDescription] = useState("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ");
     const [hotelLocation,setLocation] = useState("dummy Location");
@@ -28,43 +29,56 @@ export default function hotelPage({ params }: { params: Promise<{ hotelId: strin
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        if (status === "unauthenticated") {
-          router.push('/api/auth/signin');
-          return;
+        const fetchHotelData = async () => {
+            try {
+                const hotelData = await getHotel(id);
+
+                console.log("BACKEND RETURNED THIS DATA:", hotelData);
+
+                setHotel(hotelData.hotel_name || "Name not found.");
+                setDescription(hotelData.description || "No description available.");
+                setLocation(hotelData.address || hotelData.region || "Location not specified");
+                setTelephone(hotelData.tel);
+                setEmail(hotelData.email || "No email provided");
+                // setPhotoURL(hotelData.picture);
+                
+            } catch (error) {
+                console.error("Error loading hotel:", error);
+            }
+        };
+
+        if (id) {
+            fetchHotelData();
         }
-    }, [session, status]);
+    }, [id]);
 
     const handleReviewSubmit = async (rating: number, comment: string) => {
-    console.log("User submitted:", { rating, comment });
-    
-    if (!session || !session.user || !session.user.token) {
-        alert("You must be logged in to leave a review.");
-        return; 
-    }
+        console.log("User submitted:", { rating, comment });
+            
+        if (!session || !session.user || !session.user.token) {
+            alert("You must be logged in to leave a review.");
+                return; 
+        }
 
-    try {
-        await addReview(
-            hotelId, 
-            rating, 
-            comment, 
-            session.user.token
-        );
-        
-        setIsModalOpen(false);
-    } catch (error) {
-        console.error("Failed to submit review", error);
-    }
-};
-
-    useEffect(()=>
-    {}
-    ,[]);
+        try {
+            await addReview(
+                id, 
+                rating, 
+                comment,   
+                session.user.token
+            );
+            
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error("Failed to submit review", error);
+        }
+   };
 
 
     return(
         <main className="min-h-screen bg-slate-50 pt-28 pb-10 px-4 flex flex-col items-center ">
             <div className={styles.StyleWrapper}>
-                <h1>{hotelName} ({hotelId}) </h1>
+                <h1>{hotelName}</h1>
                 <div className={styles.ContentWrapper}>
                     <div className={styles.ImageWrapper}>
                         {/*TODO :: add </Image> when the backend has been edited*/}
@@ -81,7 +95,7 @@ export default function hotelPage({ params }: { params: Promise<{ hotelId: strin
                     </div>
                 </div>
                 <div className={styles.ButtonWrapper}>
-                    <Link href={`/booking?hotel=${hotelId}`}>
+                    <Link href={`/booking?hotel=${id}`}>
                             Book Now  
                     </Link>
                     {/*Conditionally displaying these two between user's role*/}
@@ -99,21 +113,9 @@ export default function hotelPage({ params }: { params: Promise<{ hotelId: strin
                     />
                 </div>
             </div>
-        
-        <div className={styles.ButtonWrapper}>
-          <Link href={`/booking?hotel=${hotelId}`}>Book Now</Link>
-          {/*Conditionally displaying these two between user's role*/}
-          <button>Edit</button>
-          <button>Review</button>
-          <ReviewModal 
-                        isOpen={isModalOpen} 
-                        onClose={() => setIsModalOpen(false)} 
-                        onSubmit={handleReviewSubmit} 
-            />
-        </div>
 
         <HotelEditPanel />
-            <Link href={"/hotel/${id}/reviews"} className={styles.ButtonWrapper}>
+            <Link href={`/hotel/${id}/reviews`} className={styles.ButtonWrapper}>
                 All reviews
             </Link>
         </main>

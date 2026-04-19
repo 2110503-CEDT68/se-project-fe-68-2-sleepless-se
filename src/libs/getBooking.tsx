@@ -1,5 +1,5 @@
 export default async function getBooking(id: string, token: string) {
-  const res = await fetch(`https://hotelbooking-kwtf.onrender.com/api/v1/bookings/${id}`, {
+  const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/bookings/${id}`, {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`
