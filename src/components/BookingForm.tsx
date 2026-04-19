@@ -9,6 +9,8 @@ import getHotels from '@/libs/getHotels';
 import getUserProfile from '@/libs/getUserProfile';
 import SignInPrompt from './SignInPrompt';
 
+import ProfileIcon from './Profile/ProfileIcon';
+
 interface BookingFormProps {
   initialHotelId: string;
 }
@@ -25,6 +27,7 @@ export default function BookingForm({ initialHotelId }: BookingFormProps) {
   const [userTel, setUserTel] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userColor, setUserColor] = useState('#0ea5e9');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -34,6 +37,7 @@ export default function BookingForm({ initialHotelId }: BookingFormProps) {
           setUserName(profileData.data?.name || profileData.name || '');
           setUserTel(profileData.data?.tel || profileData.tel || '');
           setUserEmail(profileData.data?.email || session.user?.email || '');
+          setUserColor(profileData.data?.profileImageUrl || '#0ea5e9');
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
         }
@@ -115,9 +119,11 @@ export default function BookingForm({ initialHotelId }: BookingFormProps) {
 
               <div className="px-6 pb-6 -mt-10">
                 {/* Avatar */}
-                <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center border-2 border-white mb-4">
-                  <span className="text-2xl font-black text-sky-600">{avatarLetter}</span>
-                </div>
+                <ProfileIcon 
+                  name={userName}
+                  color={userColor}
+                  className="w-24 h-24 text-4xl border-4 border-white ring-1 ring-gray-100" 
+                />
 
                 <h2 className="text-xl font-bold text-slate-800 mb-1">{userName || '—'}</h2>
                 <p className="text-sm text-slate-400 mb-5">Registered Guest</p>
