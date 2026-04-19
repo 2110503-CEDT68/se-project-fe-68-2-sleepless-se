@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import { use } from "react";
 import { Rating } from "@mui/material";
 import Link from "next/link";
+import Image from "next/image";
 
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -30,7 +31,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
     const [region, setRegion] = useState("Dummy region");
     const [hotelTelephone,setTelephone] = useState("+66xxxxxxxxxxx");
     const [hotelEmail, setEmail] = useState("Dummy Email");
-    const [hotelPhotoURL, setPhotoURL] = useState("Photo");
+    const [hotelPhotoURL, setPhotoURL] = useState("");
     const [hotelTotalRating,setTotalRating] = useState(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditOpen, setIsEdit] = useState(false);
@@ -51,7 +52,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 setDistrict(hotelData.district);
                 setPostal(hotelData.postalcode);
                 setProvince(hotelData.province);
-                // setPhotoURL(hotelData.picture);
+                setPhotoURL(hotelData? hotelData.imageURL:"");
                 
             } catch (error) {
                 console.error("Error loading hotel:", error);
@@ -62,6 +63,10 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             fetchHotelData();
         }
     }, [id]);
+
+    useEffect(() => {
+    console.log("PHOTO URL UPDATED:", hotelPhotoURL);
+    }, [hotelPhotoURL]);
 
     const handleReviewSubmit = async (rating: number, comment: string) => {
         console.log("User submitted:", { rating, comment });
@@ -141,8 +146,9 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 <h1>{hotelName}</h1>
                 <div className={styles.ContentWrapper}>
                     <div className={styles.ImageWrapper}>
+                        <Image alt="hotelImage" src={hotelPhotoURL} fill style={{ objectFit: "cover" }}></Image>
                         {/*TODO :: add </Image> when the backend has been edited*/}
-                        <strong>hotelPhotoURL</strong>
+                        
                     </div>
                     <div className={styles.InformationWrapper}>
                         <h2>📍 {hotelLocation} {hotelDistrict} {province} {region} {postalCode}</h2>

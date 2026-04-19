@@ -112,9 +112,7 @@ export default function HotelSubmissionPage() {
       setLoading(true);
       try {
         const token = (session as any)?.user?.token || localStorage.getItem('token'); 
-        
-        // Pass "PENDING" to the fetcher!
-        const result = await getHotelSubmissions(token, 'PENDING');
+        const result = await getHotelSubmissions(token);
         
         if (result.success) {
           setSubmissions(result.data);

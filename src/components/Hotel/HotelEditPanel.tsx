@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import styles from "./HotelEditPanel.module.css"
 import { TextField } from "@mui/material";
+import Image from "next/image";
 
 type HotelEditProp = {
     name: string;
@@ -70,7 +71,8 @@ export default function HotelEditPanel({name,description,location,telephone,emai
                 <div className={styles.ContentWrapper}>
                     <div className={styles.ImageWrapper}>
                         {/*TODO :: add </Image> when the backend has been edited*/}
-                        <strong>hotelPhotoURL</strong>
+                        <Image alt="hotelImage" src={hotelPhotoURL} fill style={{ objectFit: "cover" }}></Image>
+                        
                         
                     </div>
                     <div className={styles.InformationWrapper}>

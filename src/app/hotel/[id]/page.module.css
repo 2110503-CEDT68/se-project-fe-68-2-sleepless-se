@@ -43,6 +43,8 @@
     align-items: center;
     background-color: #d9d9d9;
     border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
 }
 
 .InformationWrapper{
