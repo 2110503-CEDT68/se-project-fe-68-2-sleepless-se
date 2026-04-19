@@ -15,6 +15,7 @@ import addReview from "@/libs/addReview";
 import getHotel from "@/libs/getHotel";
 import { describe } from "node:test";
 import updateHotel from "@/libs/updateHotels";
+import HotelEditModal from "@/components/Hotel/HotelEditModal";
 
 export default function hotelPage({ params }: { params: Promise<{ id: string }>;}) {
     const { data: session, status } = useSession();
@@ -29,7 +30,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
     const [hotelPhotoURL, setPhotoURL] = useState("Photo");
     const [hotelTotalRating,setTotalRating] = useState(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [idEditOpen, setIsEdit] = useState(false);
+    const [isEditOpen, setIsEdit] = useState(false);
 
     useEffect(() => {
         const fetchHotelData = async () => {
@@ -41,7 +42,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 setHotel(hotelData.hotel_name || "Name not found.");
                 setDescription(hotelData.description || "No description available.");
                 setLocation(hotelData.address || hotelData.region || "Location not specified");
-                setTelephone(hotelData.tel);
+                setTelephone(hotelData.telephone);
                 setEmail(hotelData.email || "No email provided");
                 // setPhotoURL(hotelData.picture);
                 
@@ -108,7 +109,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
         setTelephone(updatedData.telephone);
         setEmail(updatedData.email);
 
-        setIsEdit(false); // close panel ✅
+        setIsEdit(false); 
 
     } catch (err) {
         console.error("Update failed:", err);
@@ -159,18 +160,22 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             </div>
             </div>
 
-            { idEditOpen && (
-            <HotelEditPanel
-                name={hotelName}
-                description={hotelDescription}
-                email={hotelEmail}
-                location={hotelLocation}
-                photoURL={hotelPhotoURL}
-                telephone={hotelTelephone}
-                onSave={handleEdit}
-                onCancel={() => setIsEdit(false)}
-            />
-            )}
+            <HotelEditModal isOpen={isEditOpen}>
+                { isEditOpen && (
+                <HotelEditPanel
+                    name={hotelName}
+                    description={hotelDescription}
+                    email={hotelEmail}
+                    location={hotelLocation}
+                    photoURL={hotelPhotoURL}
+                    telephone={hotelTelephone}
+                    onSave={handleEdit}
+                    onCancel={() => setIsEdit(false)}
+                />
+                )}
+
+
+            </HotelEditModal>
 
             <Link href={`/hotel/${id}/reviews`} className={styles.ButtonWrapper}>
                 All reviews

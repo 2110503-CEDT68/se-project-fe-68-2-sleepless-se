@@ -44,20 +44,24 @@ const [hotelPhotoURL, setPhotoURL] = useState(photoURL || "");
     return(
         <div className={styles.StyleWrapper}>
                 <h1>
-                    <input type="text" onChange={(e)=>setHotel(e.target.value)} value={hotelName}/>
+                    <div className={styles.InputWrapper}>
+                        <input type="text" onChange={(e)=>setHotel(e.target.value)} value={hotelName}/>
+                        <img  className={styles.EditIcon} src="/edit.svg" /> 
+                    </div>
                 </h1>
                 <div className={styles.ContentWrapper}>
                     <div className={styles.ImageWrapper}>
                         {/*TODO :: add </Image> when the backend has been edited*/}
                         <strong>hotelPhotoURL</strong>
+                        
                     </div>
                     <div className={styles.InformationWrapper}>
-                        <h2>📍 <input type="text" onChange={(e)=>setLocation(e.target.value)} value={hotelLocation}/></h2>
-                        <h2>📞 <input type="tel" onChange={(e)=>setTelephone(e.target.value)} value={hotelTelephone}/></h2>
-                        <h2>✉️ <input type="email" onChange={(e)=>setEmail(e.target.value)} value={hotelEmail}/></h2>
+                        <h2> <div className={styles.InputWrapper}>📍 <input type="text" onChange={(e)=>setLocation(e.target.value)} value={hotelLocation}/><img  className={styles.EditIcon} src="/edit.svg" /> </div></h2>
+                        <h2> <div className={styles.InputWrapper}>📞 <input type="tel" onChange={(e)=>setTelephone(e.target.value)} value={hotelTelephone}/><img  className={styles.EditIcon} src="/edit.svg" /> </div></h2>
+                        <h2>✉️ {hotelEmail}</h2>
                         <p><textarea onChange={(e)=>setDescription(e.target.value)} value={hotelDescription}/></p>
                         <div className={styles.ButtonWrapper}>
-                            <button onClick={onCancel}>
+                            <button onClick={onCancel} className={styles.CancelButton}>
                                 Cancel
                                 </button>
                             <button
