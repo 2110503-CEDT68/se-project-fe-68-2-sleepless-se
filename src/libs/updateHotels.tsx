@@ -21,7 +21,8 @@ export default async function updateHotel(
       body: JSON.stringify({
         hotel_name: updatedData.name,
         address: updatedData.location,
-        telephone: updatedData.telephone, 
+        telephone: updatedData.telephone,
+        description: updatedData.description 
       }),
     }
   );

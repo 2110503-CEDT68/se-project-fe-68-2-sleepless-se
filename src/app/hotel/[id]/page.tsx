@@ -42,7 +42,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 setHotel(hotelData.hotel_name || "Name not found.");
                 setDescription(hotelData.description || "No description available.");
                 setLocation(hotelData.address || hotelData.region || "Location not specified");
-                setTelephone(hotelData.telephone);
+                setTelephone(hotelData.telephone || "No phone number provided.");
                 setEmail(hotelData.email || "No email provided");
                 // setPhotoURL(hotelData.picture);
                 
