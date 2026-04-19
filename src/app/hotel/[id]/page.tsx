@@ -13,6 +13,8 @@ import HotelEditPanel from "@/components/Hotel/HotelEditPanel";
 import ReviewModal from "@/components/ReviewModal";
 import addReview from "@/libs/addReview";
 import getHotel from "@/libs/getHotel";
+import updateHotel from "@/libs/updateHotels";
+import HotelEditModal from "@/components/Hotel/HotelEditModal";
 
 export default function hotelPage({ params }: { params: Promise<{ id: string }>;}) {
     const { data: session, status } = useSession();
@@ -22,11 +24,16 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
     const [hotelName,setHotel] = useState("Dummy Hotel");
     const [hotelDescription,setDescription] = useState("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ");
     const [hotelLocation,setLocation] = useState("dummy Location");
+    const [hotelDistrict,setDistrict] = useState("Dummy District");
+    const [postalCode,setPostal] = useState("Dummy Postal");
+    const [province,setProvince] = useState("DummyProvince");
+    const [region, setRegion] = useState("Dummy region");
     const [hotelTelephone,setTelephone] = useState("+66xxxxxxxxxxx");
     const [hotelEmail, setEmail] = useState("Dummy Email");
     const [hotelPhotoURL, setPhotoURL] = useState("Photo");
     const [hotelTotalRating,setTotalRating] = useState(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditOpen, setIsEdit] = useState(false);
 
     useEffect(() => {
         const fetchHotelData = async () => {
@@ -38,8 +45,12 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                 setHotel(hotelData.hotel_name || "Name not found.");
                 setDescription(hotelData.description || "No description available.");
                 setLocation(hotelData.address || hotelData.region || "Location not specified");
-                setTelephone(hotelData.tel);
+                setTelephone(hotelData.telephone || "No phone number provided.");
                 setEmail(hotelData.email || "No email provided");
+                setRegion(hotelData.region);
+                setDistrict(hotelData.district);
+                setPostal(hotelData.postalcode);
+                setProvince(hotelData.province);
                 // setPhotoURL(hotelData.picture);
                 
             } catch (error) {
@@ -69,10 +80,59 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             );
             
             setIsModalOpen(false);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to submit review", error);
+            const errorMessage = error?.message || "Failed to submit review. Please try again.";
+            alert(`Error: ${errorMessage}`);
         }
    };
+
+   type HotelUpdateData = {
+    name: string;
+    description: string;
+    location: string;
+    telephone: string;
+    email: string;
+    photoURL: string;
+    province:string;
+    region: string;
+    postalcode: string;
+    district: string;
+
+    };
+
+   const handleEdit = async (updatedData: HotelUpdateData) => {
+    if (!session?.user?.token) {
+        alert("You must be logged in");
+        return;
+    }
+
+    try {
+        const result = await updateHotel(
+        id,
+        updatedData,
+        session.user.token
+        );
+
+        console.log("Updated:", result);
+
+        // update UI
+        setHotel(updatedData.name);
+        setDescription(updatedData.description);
+        setLocation(updatedData.location);
+        setTelephone(updatedData.telephone);
+        setEmail(updatedData.email);
+        setProvince(updatedData.province);
+        setDistrict(updatedData.district);
+        setPostal(updatedData.postalcode);
+        setRegion(updatedData.region);
+
+        setIsEdit(false); 
+
+    } catch (err) {
+        console.error("Update failed:", err);
+    }
+    };
 
 
     return(
@@ -85,7 +145,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                         <strong>hotelPhotoURL</strong>
                     </div>
                     <div className={styles.InformationWrapper}>
-                        <h2>📍 {hotelLocation}</h2>
+                        <h2>📍 {hotelLocation} {hotelDistrict} {province} {region} {postalCode}</h2>
                         <h2>📞 {hotelTelephone}</h2>
                         <h2>✉️ {hotelEmail}</h2>
                         <p>{hotelDescription}</p>
@@ -105,7 +165,7 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
                         {/* Example of Role-Based Rendering for the Edit button */}
                         {/* Replace 'admin' with whatever role designates a manager/admin in your app */}
                         {session.user?.role === "admin" && (
-                            <button>
+                            <button onClick={()=> setIsEdit(true)}>
                                 Edit
                             </button>
                         )}
@@ -118,7 +178,27 @@ export default function hotelPage({ params }: { params: Promise<{ id: string }>;
             </div>
             </div>
 
-        <HotelEditPanel />
+            <HotelEditModal isOpen={isEditOpen}>
+                { isEditOpen && (
+                <HotelEditPanel
+                    name={hotelName}
+                    description={hotelDescription}
+                    email={hotelEmail}
+                    location={hotelLocation}
+                    photoURL={hotelPhotoURL}
+                    telephone={hotelTelephone}
+                    region={region}
+                    district={hotelDistrict}
+                    province={province}
+                    postalcode={postalCode}
+                    onSave={handleEdit}
+                    onCancel={() => setIsEdit(false)}
+                />
+                )}
+
+
+            </HotelEditModal>
+
             <Link href={`/hotel/${id}/reviews`} className={styles.ButtonWrapper}>
                 All reviews
             </Link>

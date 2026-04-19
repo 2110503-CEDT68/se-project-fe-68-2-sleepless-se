@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Rating } from "@mui/material";
 import Link from "next/link";
+import ReviewList from "@/components/ReviewList";
 
 const dummyReviews = [
   { id: 1, name: "Jake", comment: "The hotel is clean!", rating: 5 },
@@ -29,7 +30,6 @@ export default function AllReviewsPage({ params }: { params: { id: string } }) {
       sortOrder === "desc" ? b.rating - a.rating : a.rating - b.rating,
     );
 
-  // Get unique ratings that exist in the data
   const availableRatings = [...new Set(dummyReviews.map((r) => r.rating))].sort(
     (a, b) => b - a,
   );
@@ -37,7 +37,6 @@ export default function AllReviewsPage({ params }: { params: { id: string } }) {
   return (
     <main className="min-h-screen bg-slate-100 pt-28 pb-10 px-4 flex flex-col items-center">
       <div className="w-full max-w-2xl">
-        {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-800 leading-tight">
@@ -45,8 +44,6 @@ export default function AllReviewsPage({ params }: { params: { id: string } }) {
             </h1>
             <h1 className="text-2xl font-bold text-slate-800">{hotelName}</h1>
           </div>
-
-          {/* Sort dropdown */}
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
@@ -57,7 +54,6 @@ export default function AllReviewsPage({ params }: { params: { id: string } }) {
           </select>
         </div>
 
-        {/* Star Filter Buttons */}
         <div className="flex flex-wrap gap-2 mb-5">
           <button
             onClick={() => setFilterRating(null)}
@@ -91,41 +87,8 @@ export default function AllReviewsPage({ params }: { params: { id: string } }) {
           ))}
         </div>
 
-        {/* Review Cards */}
-        <div className="flex flex-col gap-3">
-          {filteredAndSorted.length === 0 ? (
-            <p className="text-slate-400 text-sm text-center py-10">
-              No reviews for this rating.
-            </p>
-          ) : (
-            filteredAndSorted.map((review) => (
-              <div
-                key={review.id}
-                className="bg-white rounded-2xl px-5 py-4 shadow-sm flex items-center gap-4"
-              >
-                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-semibold text-sm flex-shrink-0">
-                  {review.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-800 text-sm">
-                    {review.name}
-                  </p>
-                  <p className="text-slate-500 text-sm italic">
-                    "{review.comment}"
-                  </p>
-                  <Rating
-                    value={review.rating}
-                    precision={0.5}
-                    readOnly
-                    size="small"
-                  />
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        <ReviewList reviews={filteredAndSorted} />
 
-        {/* Back button */}
         <div className="mt-6">
           <Link
             href={`/hotel/${id}`}
