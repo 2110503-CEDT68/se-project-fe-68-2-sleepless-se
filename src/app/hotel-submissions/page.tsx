@@ -107,12 +107,14 @@ export default function HotelSubmissionPage() {
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false); // Prevents spam clicking
 
+  const token = (session as any)?.user?.token;
+
   useEffect(() => {
     const fetchSubmissions = async () => {
       setLoading(true);
       try {
-        const token = (session as any)?.user?.token || localStorage.getItem('token'); 
-        const result = await getHotelSubmissions(token);
+        const currentToken = token || localStorage.getItem('token'); 
+        const result = await getHotelSubmissions(currentToken, 'PENDING');
         
         if (result.success) {
           setSubmissions(result.data);
@@ -125,7 +127,7 @@ export default function HotelSubmissionPage() {
     };
 
     fetchSubmissions();
-  }, [session]);
+  }, [token]);
 
   const handleApprove = async () => {
     if (!selectedSubmission) return;
