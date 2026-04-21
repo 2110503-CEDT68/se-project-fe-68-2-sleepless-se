@@ -119,7 +119,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
         <div className="absolute bottom-0 right-0">
           {session && (
                     <>
-                        {session.user?.role === "admin" && (
+                        {session.user?.role === "admin" || session.user?.role === "manager" && (
                             <button onClick={()=> setIsEdit(true)}
                                     className="flex-1 md:flex-none bg-blue-400 hover:bg-amber-500 text-blue-550 px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm">
                                 Edit
