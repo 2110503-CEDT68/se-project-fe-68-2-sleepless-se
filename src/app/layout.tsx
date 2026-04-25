@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono,Anuphan } from "next/font/google";
 import "./globals.css";
 import TopMenu from "../components/TopMenu";
 import NextAuthProvider from "@/providers/NextAuthProvider";
@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const anuphan = Anuphan({
+  variable: "--font-anuphan",
+  subsets:["thai"],
+})
+
 export const metadata: Metadata = {
   title: "Hotel Explorer",
   description: "Book your hotel easily",
@@ -27,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${anuphan.variable}`}>
         <NextAuthProvider>
           <ReduxProvider>
             <TopMenu />
