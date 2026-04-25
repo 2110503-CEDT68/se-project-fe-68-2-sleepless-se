@@ -169,13 +169,18 @@ export default function ReviewCard({
       {/* Actions */}
       {!editing && (isOwner || isAdmin) && (
         <div className="flex flex-col gap-1.5 shrink-0">
-          <button
-            onClick={() => setEditing(true)}
-            disabled={loading}
-            className="px-3 py-1 rounded-md text-xs font-semibold bg-sky-500 hover:bg-sky-600 text-white transition-colors disabled:opacity-50 w-16 text-center"
-          >
-            Edit
-          </button>
+          {/* Only the owner can Edit */}
+          {isOwner && (
+            <button
+              onClick={() => setEditing(true)}
+              disabled={loading}
+              className="px-3 py-1 rounded-md text-xs font-semibold bg-sky-500 hover:bg-sky-600 text-white transition-colors disabled:opacity-50 w-16 text-center"
+            >
+              Edit
+            </button>
+          )}
+          
+          {/* Both owners and admins can see the Delete button */}
           <button
             onClick={handleDelete}
             disabled={loading}
