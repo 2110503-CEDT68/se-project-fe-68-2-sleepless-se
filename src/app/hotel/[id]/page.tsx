@@ -12,6 +12,7 @@ import addReview from "@/libs/addReview";
 import getHotel from "@/libs/getHotel";
 import getReviews from "@/libs/getReviews";
 import getBookings from "@/libs/getBookings";
+import Link from "next/link";
 
 export default function HotelPage({ params }: { params: Promise<{ id: string }> }) {
     const { data: session } = useSession();
@@ -100,7 +101,18 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
 
                 {/* 2. Rating & Reviews Section */}
                 <div className="bg-white rounded-[2.5rem] p-10 shadow-sm">
-                    <h2 className="text-2xl font-black text-slate-800 mb-8">คะแนนรีวิวจากผู้เข้าพัก</h2>
+    
+                {/* Header Container: Flexbox handles the positioning */}
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-2xl font-black text-slate-800">คะแนนรีวิวจากผู้เข้าพัก</h2>
+                    
+                    <Link 
+                        href={`/hotel/${id}/reviews`} 
+                        className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors underline underline-offset-4"
+                    >
+                        See All Reviews →
+                    </Link>
+                </div>
                     
                     {reviewStats.totalCount > 0 ? (
                         <>
