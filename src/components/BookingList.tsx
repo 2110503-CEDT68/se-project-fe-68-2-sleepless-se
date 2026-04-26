@@ -87,7 +87,7 @@ export default function BookingList() {
 
               <div className="flex-1">
                 <Link href={`/hotel/${booking.hotel?.id}`}>
-                  <h3 className="text-xl font-bold text-slate-800">
+                  <h3 className="text-xl font-bold text-[#0369a1]">
                     {booking.hotel?.hotel_name || "Unknown Hotel"}
                   </h3>
                 </Link>

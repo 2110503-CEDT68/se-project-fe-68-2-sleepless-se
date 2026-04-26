@@ -31,7 +31,8 @@ export const authOptions: AuthOptions = {
               name: profile.data?.name || profile.name, // ดึงชื่อมาใส่ตรงนี้แหละครับ!
               email: credentials.email,
               token: user.token,
-              role: profile.data?.role || profile.role  
+              role: profile.data?.role || profile.role,
+              hotel: profile.data?.hotel
             } as any;
 
           } catch (error) {

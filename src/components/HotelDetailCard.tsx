@@ -25,6 +25,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
   const [hotelTelephone,setTelephone] = useState("+66xxxxxxxxxxx");
   const [hotelEmail, setEmail] = useState("Dummy Email");
   const [hotelPhotoURL, setPhotoURL] = useState("");
+  const [isEditable, setEditable] = useState(false);
 
   useEffect(() => {
         const fetchHotelData = async () => {
@@ -43,7 +44,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
                 setPostal(hotelData.postalcode);
                 setProvince(hotelData.province);
                 setPhotoURL(hotelData? hotelData.imageURL:"");
-                
+
             } catch (error) {
                 console.error("Error loading hotel:", error);
             }
@@ -53,6 +54,19 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
             fetchHotelData();
         }
     }, [id]);
+
+    useEffect(() => {
+        console.log(session);
+        if (status !== "authenticated" || !session?.user) return;
+
+        const isAdmin = session.user.role === "admin";
+
+        const isManagerOfThisHotel =
+          session.user.role === "manager" &&
+          session.user.hotel === id;
+
+        setEditable(isAdmin || isManagerOfThisHotel);
+      }, [session, status, id]);
 
   const handleEdit = async (updatedData: HotelUpdateData) => {
     if (!session?.user?.token) {
@@ -79,7 +93,6 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
         setDistrict(updatedData.district);
         setPostal(updatedData.postalcode);
         setRegion(updatedData.region);
-
         setIsEdit(false); 
 
     } catch (err) {
@@ -119,7 +132,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
         <div className="absolute bottom-0 right-0">
           {session && (
                     <>
-                        {session.user?.role === "admin" || session.user?.role === "manager" && (
+                        {isEditable && (
                             <button onClick={()=> setIsEdit(true)}
                                     className="flex-1 md:flex-none bg-blue-400 hover:bg-amber-500 text-blue-550 px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm">
                                 Edit
