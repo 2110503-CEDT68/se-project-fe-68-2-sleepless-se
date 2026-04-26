@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import ModerationActions from "@/components/ModerationActions";
 import type { ReviewStatus } from "../../../../interface";
 
+// 1. เพิ่มฟิลด์ isReported และ reports ลงใน Interface
 interface ReviewItem {
   _id: string;
   hotel: { _id: string; hotel_name: string } | string;
@@ -14,6 +15,8 @@ interface ReviewItem {
   comment: string;
   status?: ReviewStatus;
   createdAt: string;
+  isReported?: boolean; // เพิ่มบรรทัดนี้
+  reports?: { reason: string; user?: string }[]; // เพิ่มบรรทัดนี้
 }
 
 function AvatarInitial({ name }: { name: string }) {
@@ -85,10 +88,12 @@ export default function ModerationPage() {
             );
             if (!res.ok) return [];
             const data = await res.json();
-            // Tag each review with hotel info
+            // 2. ส่งฟิลด์ reports และ isReported มาให้ครบ
             return (data.data ?? []).map((r: any) => ({
               ...r,
               hotel: { _id: hotel._id, hotel_name: hotel.hotel_name },
+              isReported: r.isReported,
+              reports: r.reports
             }));
           } catch {
             return [];
@@ -210,6 +215,9 @@ export default function ModerationPage() {
                       currentStatus={review.status ?? "active"}
                       token={(session?.user as any)?.token ?? ""}
                       onActionComplete={handleActionComplete}
+                      // 3. ส่ง Props เพิ่มเติมไปให้ ModerationActions
+                      isReported={review.isReported}
+                      reports={review.reports}
                     />
                   </div>
                 );
