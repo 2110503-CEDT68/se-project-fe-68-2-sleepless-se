@@ -98,7 +98,7 @@ export default function ModerationPage() {
 
       const allReviews = results
         .flat()
-        .filter((r: any) => r.status === "reported")
+        .filter((r: any) => r.isReported === true)
         .sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
