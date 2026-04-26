@@ -114,14 +114,14 @@ export interface StarFilterTabsProps {
 }
 
 // ─── Rating Distribution ──────────────────────────────────────────────────────
-export interface RatingDistributionBarProps {
+export type RatingDistributionBarProps = {
   starCounts: Record<number, number>;
   totalCount: number;
-  avgRating: number | null;
+  avgRating: number;
   onStarClick?: (star: number) => void;
   selectedStar?: number | null;
-}
-
+  imageURL?: string; 
+};
 // ─── Profile ──────────────────────────────────────────────────────────────────
 export interface ProfileViewProps {
   name: string;
