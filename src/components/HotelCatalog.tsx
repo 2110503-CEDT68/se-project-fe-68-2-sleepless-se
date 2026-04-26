@@ -165,7 +165,6 @@ export default function HotelCatalog() {
                   />
                 ))}
               </div>
-      </div>
           ) : (
             <div className="text-center py-20 text-slate-400">
               No hotels found with this rating. Try another filter!
@@ -173,6 +172,7 @@ export default function HotelCatalog() {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }
