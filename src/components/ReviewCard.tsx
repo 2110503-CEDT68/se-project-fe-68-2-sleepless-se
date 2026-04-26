@@ -92,7 +92,7 @@ export default function ReviewCard({
     ) : null;
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm flex gap-4 items-start w-full">
+    <div className="bg-white rounded-2xl p-5 shadow-sm flex gap-4 items-start w-full border border-slate-200">
       {/* Avatar */}
       <div className="w-11 h-11 rounded-full bg-[#E0F2FE] text-[#0369A1] flex items-center justify-center font-bold text-lg shrink-0">
         {userName.charAt(0).toUpperCase()}

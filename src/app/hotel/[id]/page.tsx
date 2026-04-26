@@ -107,7 +107,7 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
                 />
 
                 {/* 2. Rating & Reviews Section */}
-                <div className="bg-white rounded-[2.5rem] p-10 shadow-sm">
+                <div className="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-200">
     
                 {/* Header Container: Flexbox handles the positioning */}
                 <div className="flex justify-between items-center mb-8">

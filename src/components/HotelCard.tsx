@@ -22,7 +22,7 @@ export default function HotelCard({
   reviewCount = 0,
 }: HotelCardProps) {
   return (
-    <div className="w-full bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
+    <div className="w-full bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group h-full border border-slate-200">
       {/* Image */}
       <div className="w-full h-[220px] relative bg-slate-100 overflow-hidden">
         <Image
@@ -33,7 +33,7 @@ export default function HotelCard({
         />
       </div>
 
-      <div className="p-7 flex flex-col flex-grow space-y-4">
+      <div className="p-7 flex flex-col flex-grow space-y-4 ">
         {/* Rating */}
         <div className="flex items-center gap-2 min-h-[32px]">
           {reviewCount > 0 ? (
