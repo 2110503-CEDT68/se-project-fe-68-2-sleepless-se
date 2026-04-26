@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import getBookings from '@/libs/getBookings';
 import deleteBooking from '@/libs/deleteBooking';
@@ -26,6 +27,7 @@ export default function BookingList() {
         try {
             const token = (session?.user as any)?.token; 
             const data = await getBookings(token);
+            console.log(data);
             setBookings(data.data || []);
         } catch (error) {
             console.error(error);
@@ -60,15 +62,36 @@ export default function BookingList() {
           const checkOut = new Date(booking.checkOutDate).toLocaleDateString('en-GB');
 
           return (
-            <div key={booking._id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition hover:shadow-md">
-                
-              <div>
+           <div
+                key={booking._id}
+                className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-4 hover:shadow-md transition md:flex-row"
+              >
+
+              <div className="flex flex-row gap-4 flex-1">
+
+              <div className="relative w-32 h-24 max-h-24 flex-shrink-0 rounded-xl overflow-hidden bg-slate-200">
+                  {booking.hotel?.imageURL ? (
+                    <Image
+                      src={booking.hotel.imageURL}
+                      alt="hotel"
+                      fill
+                      sizes="128px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-slate-400 text-sm">
+                      No Image
+                    </div>
+                  )}
+                </div>
+
+              <div className="flex-1">
                 <Link href={`/hotel/${booking.hotel?.id}`}>
-                <h3 className="text-xl font-bold text-slate-800">
-                  {booking.hotel?.hotel_name || "Unknown Hotel"}
-                </h3>
+                  <h3 className="text-xl font-bold text-slate-800">
+                    {booking.hotel?.hotel_name || "Unknown Hotel"}
+                  </h3>
                 </Link>
-                
+
                 {booking.user?.name && (
                   <div className="mt-2 p-2.5 bg-sky-50 border border-sky-100 rounded-lg inline-block">
                     <p className="text-sm font-semibold text-sky-700">
@@ -88,17 +111,23 @@ export default function BookingList() {
                 </div>
               </div>
 
-              <div className="flex space-x-3 w-full md:w-auto">
-                <Link href={`/booking/edit/${booking._id}`} className="w-full md:w-auto">
-                  <button className="w-full bg-sky-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm">
-                      Edit
+              </div>
+
+              <div className="flex flex-col gap-2 w-full md:max-w-[150px]">
+                <Link href={`/booking/edit/${booking._id}`}>
+                  <button className="w-full bg-sky-500 hover:bg-sky-600 text-white px-5 py-2.5 rounded-xl font-semibold">
+                    Edit
                   </button>
                 </Link>
-                <button onClick={() => handleDelete(booking._id)} 
-                  className="w-full md:w-auto bg-rose-500 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold transition-colors shadow-sm">
-                    Cancel
+
+                <button
+                  onClick={() => handleDelete(booking._id)}
+                  className="w-full bg-rose-500 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-semibold"
+                >
+                  Cancel
                 </button>
               </div>
+
             </div>
           );
         })}
