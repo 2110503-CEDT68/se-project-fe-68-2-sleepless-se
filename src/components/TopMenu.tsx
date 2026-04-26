@@ -66,6 +66,10 @@ export default function TopMenu() {
           {session?.user?.role === "admin" && (
             <TopMenuItem title="Moderation" pageRef="/admin/moderation" />
           )}
+
+          {session?.user?.role === "manager" && (
+            <TopMenuItem title="Manage my hotel" pageRef={`/hotel/${session.user.hotel}`} />
+          )}
         </nav>
       </div>
 
