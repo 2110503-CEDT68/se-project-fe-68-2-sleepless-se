@@ -42,18 +42,23 @@ export default function HotelCatalog() {
   const [ratings, setRatings] = useState<Record<string, HotelRating>>({});
   const [loading, setLoading] = useState(true);
 
+  const [selectedRating, setSelectedRating] = useState<number | string>("");
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const hotelList = await getHotels();
+        const hotelList = await getHotels({
+          rating: selectedRating !== "" ? Number(selectedRating) : undefined
+        });
         setHotels(hotelList);
 
         // Fetch all reviews in parallel
+        const ratingMap: Record<string,HotelRating> = {};
         const reviewResults = await Promise.all(
           hotelList.map((hotel: Hotel) => getReviews(hotel._id))
         );
 
-        const ratingMap: Record<string, HotelRating> = {};
         hotelList.forEach((hotel: Hotel, i: number) => {
           const res = reviewResults[i];
           ratingMap[hotel._id] = {
@@ -70,11 +75,7 @@ export default function HotelCatalog() {
     };
 
     fetchData();
-  }, []);
-
-  if (loading) {
-    return <div className="text-center text-slate-500 mt-10">Loading amazing hotels for you... 🌊</div>;
-  }
+  }, [selectedRating]);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
@@ -82,20 +83,60 @@ export default function HotelCatalog() {
         Explore Our Top Hotels
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {hotels.map((hotel) => (
-          <HotelCard
-            key={hotel._id}
-            hotelId={hotel._id}
-            hotelName={hotel.hotel_name}
-            address={hotel.address}
-            telephone={hotel.telephone}
-            imageUrl={getHotelImage(hotel.hotel_name)}
-            avgRating={ratings[hotel._id]?.avgRating ?? 0}
-            reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
-          />
-        ))}
-      </div>
+      {/* Stars Filter Button */}
+        <div className="flex flex-wrap gap-2 mb-5">
+          <button
+            onClick={() => setSelectedRating("")}
+            className={`px-3 py-1 rounded-full text-sm border ${
+              selectedRating === null
+                ? 'bg-slate-700 text-white' :
+                'bg-white text-slate-600'
+            }`}
+          >
+            All
+          </button>
+
+          {[5,4,3,2,1].map((star) => (
+            <button
+              key={star}
+              onClick={() => setSelectedRating(star)}
+              className={`px-3 py-1 rounded-full text-sm border ${
+                selectedRating === star
+                  ? 'bg-yellow-400 text-white' : 
+                  'bg-white text-slate-600'
+              }`}
+            >
+              {'★'.repeat(star)}
+            </button>
+          ))}
+        </div>
+
+{loading ? (
+        <div className="text-center text-slate-500 mt-10">Searching for perfect hotels... 🌊</div>
+      ) : (
+        <>
+          {hotels.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {hotels.map((hotel) => (
+                <HotelCard
+                  key={hotel._id}
+                  hotelId={hotel._id}
+                  hotelName={hotel.hotel_name}
+                  address={hotel.address}
+                  telephone={hotel.telephone}
+                  imageUrl={getHotelImage(hotel.hotel_name)}
+                  avgRating={ratings[hotel._id]?.avgRating ?? 0}
+                  reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 text-slate-400">
+              No hotels found with this rating. Try another filter!
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
