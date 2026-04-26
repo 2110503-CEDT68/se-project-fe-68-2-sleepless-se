@@ -15,8 +15,10 @@ interface ReviewCardProps {
   authorId?: string;
   currentUserId?: string;
   currentUserRole?: string;
+  currentUserHotelId?: string;
   token?: string;
   onRefresh?: () => void;
+  onOpenReport?: () => void;
 }
 
 export default function ReviewCard({
@@ -29,11 +31,18 @@ export default function ReviewCard({
   authorId,
   currentUserId,
   currentUserRole,
+  currentUserHotelId,
   token,
   onRefresh,
+  onOpenReport,
 }: ReviewCardProps) {
   const isOwner = !!currentUserId && currentUserId === authorId;
   const isAdmin = currentUserRole === 'admin';
+  
+  // เช็คว่า User เป็น Manager ของโรงแรมนี้หรือไม่ (เพื่อให้ตรงกับ Backend)
+  // ** ถ้าอยากทดสอบว่า UI ปุ่มขึ้นไหม ให้แก้บรรทัด canManage เป็น = true; ก่อนครับ **
+  const isManagerOfHotel = currentUserRole === 'manager' && currentUserHotelId === hotelId;
+  const canManage = isAdmin || isManagerOfHotel;
 
   const [editing, setEditing] = useState(false);
   const [editRating, setEditRating] = useState(rating);
@@ -166,28 +175,42 @@ export default function ReviewCard({
         )}
       </div>
 
-      {/* Actions */}
-      {!editing && (isOwner || isAdmin) && (
+      {/* Actions (ปุ่มต่างๆ) */}
+      {!editing && (isOwner || canManage) && (
         <div className="flex flex-col gap-1.5 shrink-0">
-          {/* Only the owner can Edit */}
+          
+          {/* เจ้าของรีวิวเท่านั้นที่กดแก้ไขได้ */}
           {isOwner && (
             <button
               onClick={() => setEditing(true)}
               disabled={loading}
-              className="px-3 py-1 rounded-md text-xs font-semibold bg-sky-500 hover:bg-sky-600 text-white transition-colors disabled:opacity-50 w-16 text-center"
+              className="px-3 py-1 rounded-md text-xs font-semibold bg-sky-500 hover:bg-sky-600 text-white transition-colors disabled:opacity-50 w-16 text-center shadow-sm"
             >
               Edit
             </button>
           )}
           
-          {/* Both owners and admins can see the Delete button */}
-          <button
-            onClick={handleDelete}
-            disabled={loading}
-            className="px-3 py-1 rounded-md text-xs font-semibold bg-red-400 hover:bg-red-500 text-white transition-colors disabled:opacity-50 w-16 text-center"
-          >
-            {loading ? '…' : 'Delete'}
-          </button>
+          {/* Admin และเจ้าของ ลบได้ */}
+          {(isOwner || isAdmin) && (
+            <button
+              onClick={handleDelete}
+              disabled={loading}
+              className="px-3 py-1 rounded-md text-xs font-semibold bg-red-400 hover:bg-red-500 text-white transition-colors disabled:opacity-50 w-16 text-center shadow-sm"
+            >
+              {loading ? '…' : 'Delete'}
+            </button>
+          )}
+
+          {/* มีแค่ปุ่ม Report สำหรับ Manager หรือ Admin */}
+          {canManage && (
+            <button
+              onClick={onOpenReport}
+              disabled={loading}
+              className="px-3 py-1 rounded-md text-xs font-semibold bg-[#b3665a] hover:bg-[#a15a4f] text-white transition-colors disabled:opacity-50 w-16 text-center shadow-sm"
+            >
+              Report
+            </button>
+          )}
         </div>
       )}
     </div>

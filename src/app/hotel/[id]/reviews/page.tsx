@@ -9,6 +9,7 @@ import getHotel from '@/libs/getHotel';
 
 import ReviewCard from '@/components/ReviewCard';
 import RatingDistributionBar from '@/components/RatingDistributionBar';
+import ReportModal from '@/components/ReportModal';
 
 import type { Review } from '../../../../../interface';
 
@@ -16,22 +17,16 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
   const { id } = use(params);
   const { data: session } = useSession();
 
-  // 🔹 hotel
   const [hotelData, setHotelData] = useState<any>(null);
-
-  // 🔹 reviews
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // 🔹 controls
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterRating, setFilterRating] = useState<number | null>(null);
 
-  // 🔹 stats (for rating distribution)
   const [reviewStats, setReviewStats] = useState({
     totalCount: 0,
     avgRating: 0,
@@ -40,7 +35,35 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
 
   const limit = 5;
 
-  // ✅ Fetch paginated reviews + hotel
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null);
+
+  const handleReportSubmit = async (reviewId: string, reason: string) => {
+    try {
+      const response = await fetch(`https://se-be-9w6y.onrender.com/api/v1/reviews/${reviewId}/report`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.user?.token}`,
+        },
+        body: JSON.stringify({ reason }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Reported successfully!");
+        setIsModalOpen(false); 
+        loadReviews();
+      } else {
+        alert(data.msg || "Something went wrong");
+      }
+    } catch (error) {
+      console.error("Report Error:", error);
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+    }
+  };
+
   const loadReviews = async () => {
     setLoading(true);
     try {
@@ -65,7 +88,6 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
     }
   };
 
-  // ✅ Fetch ALL reviews once for stats
   const loadStats = async () => {
     try {
       const res = await getReviews(id);
@@ -92,17 +114,14 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
     }
   };
 
-  // 🔄 reload reviews
   useEffect(() => {
     if (id) loadReviews();
   }, [id, page, sortOrder, filterRating]);
 
-  // 🔄 load stats once
   useEffect(() => {
     if (id) loadStats();
   }, [id]);
 
-  // 🔄 reset page on filter/sort change
   useEffect(() => {
     setPage(1);
   }, [sortOrder, filterRating]);
@@ -119,9 +138,7 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
     <main className="min-h-screen bg-slate-100 pt-28 pb-10 px-4 flex flex-col items-center">
       <div className="w-full max-w-2xl">
 
-        {/* 🔹 Header */}
         <div className="flex items-center gap-4 mb-6">
-
           <Link href={`/hotel/${id}`} className="text-2xl">
             <div style={{ transform: "rotate(90deg) scaleX(2)", fontSize: "30px" }}> 
               v
@@ -147,7 +164,6 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
           </select>
         </div>
 
-        {/* 🔹 Rating Distribution */}
         <div className="mb-6">
           {hotelData && (
           <RatingDistributionBar
@@ -161,7 +177,6 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
         )}
         </div>
 
-        {/* 🔹 Filter buttons */}
         <div className="flex flex-wrap gap-2 mb-5">
           <button
             onClick={() => setFilterRating(null)}
@@ -189,7 +204,6 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
           ))}
         </div>
 
-        {/* 🔹 Reviews */}
         <div className="flex flex-col gap-3">
           {reviews.length === 0 ? (
             <p className="text-slate-400 text-sm text-center py-10">
@@ -223,15 +237,19 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
                     (session?.user as any)?.sub
                   }
                   currentUserRole={(session?.user as any)?.role}
+                  currentUserHotelId={(session?.user as any)?.hotel} 
                   token={session?.user?.token}
                   onRefresh={loadReviews}
+                  onOpenReport={() => {
+                    setSelectedReviewId(review._id);
+                    setIsModalOpen(true);
+                  }}
                 />
               );
             })
           )}
         </div>
 
-        {/* 🔹 Pagination */}
         <div className="flex justify-center items-center gap-4 mt-6">
           <button
             disabled={page === 1}
@@ -253,6 +271,13 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
             Next
           </button>
         </div>
+
+        <ReportModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleReportSubmit}
+          reviewId={selectedReviewId}
+        />
 
       </div>
     </main>
