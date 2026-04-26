@@ -49,7 +49,7 @@ export default function HotelCatalog() {
       setLoading(true);
       try {
         const hotelList = await getHotels({
-          rating: selectedRating !== "" ? Number(selectedRating) : undefined
+          minRating: selectedRating !== "" ? Number(selectedRating) : undefined
         });
         setHotels(hotelList);
 
