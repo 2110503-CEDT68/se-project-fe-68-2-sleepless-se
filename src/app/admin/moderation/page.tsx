@@ -67,7 +67,7 @@ export default function ModerationPage() {
     setLoading(true);
     setError(null);
     try {
-      // Step 1: get all hotels
+      //get hotels
       const hotelsRes = await fetch(
         "https://se-be-9w6y.onrender.com/api/v1/hotels",
       );
@@ -75,7 +75,7 @@ export default function ModerationPage() {
       const hotelsData = await hotelsRes.json();
       const hotels: any[] = hotelsData.data ?? [];
 
-      // Step 2: fetch reviews for each hotel in parallel
+      //fetch reviews
       const results = await Promise.all(
         hotels.map(async (hotel: any) => {
           try {
@@ -96,9 +96,9 @@ export default function ModerationPage() {
         }),
       );
 
-      // Step 3: flatten and sort by newest first
       const allReviews = results
         .flat()
+        .filter((r: any) => r.status === "reported")
         .sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
