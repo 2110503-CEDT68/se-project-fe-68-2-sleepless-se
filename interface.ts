@@ -24,28 +24,28 @@ export interface VenueJson {
 export interface Hotel {
   _id: string;
   hotel_name: string;
-  description: string;
-  address: string;
-  email: string;
   district: string;
   province: string;
+  postalcode: string;
   telephone: string;
   region: string;
-  postalcode: string;
+  description: string;
+  price: number;
+  imageURL: string;
+  address: string;
 }
 
 export type HotelUpdateData = {
-    name: string;
-    description: string;
-    location: string;
-    telephone: string;
-    email: string;
-    photoURL: string;
-    province:string;
-    region: string;
-    postalcode: string;
-    district: string;
-
+  name: string;
+  description: string;
+  location: string;
+  telephone: string;
+  email: string;
+  photoURL: string;
+  province: string;
+  region: string;
+  postalcode: string;
+  district: string;
 };
 
 export interface HotelJson {
@@ -133,7 +133,7 @@ export interface ProfileViewProps {
 export interface ProfileFormProps {
   initialName: string;
   initialTel: string;
-  initialColor: string; 
+  initialColor: string;
   token: string;
   onSuccess: (newName: string, newTel: string, newColor: string) => void;
   onCancel: () => void;

@@ -1,9 +1,10 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import HotelCard from './HotelCard';
-import getHotels from '@/libs/getHotels';
-import getReviews from '@/libs/getReviews';
-import { Hotel } from '../../interface';
+"use client";
+import React, { useState, useEffect } from "react";
+import HotelCard from "./HotelCard";
+import getHotels from "@/libs/getHotels";
+import getReviews from "@/libs/getReviews";
+import { Hotel } from "../../interface";
+import FilterBar from "./FilterBar";
 
 const hotelImageMap: Record<string, string> = {
   "Rayong Sand Beach": "/img/rayong_sand_beach.jpg",
@@ -25,7 +26,7 @@ const hotelImageMap: Record<string, string> = {
   "Isan Charm Resort": "/img/isan.jpg",
   "River Kwai Bridge Hotel": "/img/riverkwai.jpg",
   "Phuket Paradise": "/img/phuket.jpg",
-  "Mountain Inn": "/img/mountain_inn.jpg"
+  "Mountain Inn": "/img/mountain_inn.jpg",
 };
 
 const getHotelImage = (hotelName: string) => {
@@ -38,6 +39,14 @@ interface HotelRating {
 }
 
 export default function HotelCatalog() {
+  // set min and max for slider bar (to filter price)
+  const [minPrice, setMin] = useState(0);
+  const [maxPrice, setMax] = useState(10000);
+  // select filter from dropdown
+  const [changeProvince, setProvince] = useState("");
+  const [changeDistrict, setDistrict] = useState("");
+  const [changeRegion, setRegion] = useState("");
+
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [ratings, setRatings] = useState<Record<string, HotelRating>>({});
   const [loading, setLoading] = useState(true);
@@ -56,7 +65,7 @@ export default function HotelCatalog() {
         // Fetch all reviews in parallel
         const ratingMap: Record<string,HotelRating> = {};
         const reviewResults = await Promise.all(
-          hotelList.map((hotel: Hotel) => getReviews(hotel._id))
+          hotelList.map((hotel: Hotel) => getReviews(hotel._id)),
         );
 
         hotelList.forEach((hotel: Hotel, i: number) => {
@@ -75,13 +84,39 @@ export default function HotelCatalog() {
     };
 
     fetchData();
-  }, [selectedRating]);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="text-center text-slate-500 mt-10">
+        Loading amazing hotels for you... 🌊
+      </div>
+    );
+  }
+
+  const result = hotels.filter((hotel) => {
+    return (
+      (hotel.province === changeProvince || changeProvince === "") &&
+      (hotel.district === changeDistrict || changeDistrict === "") &&
+      (hotel.region === changeRegion || changeRegion === "") &&
+      hotel.price >= minPrice &&
+      hotel.price <= maxPrice
+    );
+  });
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-extrabold text-sky-900 mb-8 text-center">
-        Explore Our Top Hotels
-      </h2>
+    <div className="flex flex-row gap-5 p-8 w-full">
+      <FilterBar
+        provinceFilter={(e) => setProvince(e)}
+        districtFilter={(e) => setDistrict(e)}
+        regionFilter={(e) => setRegion(e)}
+        minPriceFilter={(e) => setMin(e)}
+        maxPriceFilter={(e) => setMax(e)}
+      />
+      <div className="flex-1">
+        <h2 className="text-3xl font-extrabold text-sky-900 mb-8 text-center">
+          Explore Our Top Hotels
+        </h2>
 
       {/* Stars Filter Button */}
         <div className="flex flex-wrap gap-2 mb-5">
@@ -116,20 +151,21 @@ export default function HotelCatalog() {
       ) : (
         <>
           {hotels.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {hotels.map((hotel) => (
-                <HotelCard
-                  key={hotel._id}
-                  hotelId={hotel._id}
-                  hotelName={hotel.hotel_name}
-                  address={hotel.address}
-                  telephone={hotel.telephone}
-                  imageUrl={getHotelImage(hotel.hotel_name)}
-                  avgRating={ratings[hotel._id]?.avgRating ?? 0}
-                  reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
-                />
-              ))}
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+                {result.map((hotel) => (
+                  <HotelCard
+                    key={hotel._id}
+                    hotelId={hotel._id}
+                    hotelName={hotel.hotel_name}
+                    address={hotel.address}
+                    telephone={hotel.telephone}
+                    imageUrl={getHotelImage(hotel.hotel_name)}
+                    avgRating={ratings[hotel._id]?.avgRating ?? 0}
+                    reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
+                  />
+                ))}
+              </div>
+      </div>
           ) : (
             <div className="text-center py-20 text-slate-400">
               No hotels found with this rating. Try another filter!
