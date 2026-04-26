@@ -196,7 +196,7 @@ export default function HotelSubmissionPage() {
             submissions.map((submission) => (
               <div 
                 key={submission._id} 
-                className="bg-white rounded-2xl px-5 py-4 shadow-sm flex items-center justify-between gap-4"
+                className="bg-white rounded-2xl px-5 py-4 shadow-sm flex items-center justify-between gap-4 border border-slate-200"
               >
                 <div>
                   <p className="text-xl font-bold text-slate-800">
