@@ -22,7 +22,7 @@ export default function HotelCard({
   reviewCount = 0,
 }: HotelCardProps) {
   return (
-    <div className="w-full bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
+    <div className="w-full bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
       {/* Image */}
       <div className="w-full h-[220px] relative bg-slate-100 overflow-hidden">
         <Image

@@ -63,9 +63,11 @@ export default function BookingList() {
             <div key={booking._id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition hover:shadow-md">
                 
               <div>
+                <Link href={`/hotel/${booking.hotel?.id}`}>
                 <h3 className="text-xl font-bold text-slate-800">
                   {booking.hotel?.hotel_name || "Unknown Hotel"}
                 </h3>
+                </Link>
                 
                 {booking.user?.name && (
                   <div className="mt-2 p-2.5 bg-sky-50 border border-sky-100 rounded-lg inline-block">
