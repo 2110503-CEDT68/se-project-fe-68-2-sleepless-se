@@ -116,7 +116,6 @@ export default function ModerationPage() {
     reviewId: string,
     action: "delete" | "hide" | "unhide" | "reject" | "approve",
   ) => {
-    // Remove deleted review from list immediately
     setReviews((prev) => prev.filter((r) => r._id !== reviewId));
   };
 
@@ -154,7 +153,6 @@ export default function ModerationPage() {
           </div>
         </div>
 
-        {/* Search */}
         <input
           type="text"
           placeholder="Search by user, hotel, or comment..."
@@ -188,7 +186,7 @@ export default function ModerationPage() {
                 return (
                   <div
                     key={review._id}
-                    className="flex items-start gap-3 px-4 py-4"
+                    className="flex items-center gap-3 px-4 py-4"
                   >
                     <AvatarInitial name={userName} />
 

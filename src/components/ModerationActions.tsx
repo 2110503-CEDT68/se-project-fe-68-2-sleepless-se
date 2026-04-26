@@ -34,7 +34,7 @@ export default function ModerationActions({
   };
 
   return (
-    <div className="flex flex-col items-end gap-1.5">
+    <div className="flex flex-col items-center gap-1.5">
       {error && (
         <span className="text-xs text-red-500" role="alert">
           {error}
@@ -43,7 +43,7 @@ export default function ModerationActions({
       <button
         onClick={handleDelete}
         disabled={loading}
-        className="px-3 py-1 rounded-md text-xs font-semibold bg-red-400 hover:bg-red-500 text-white transition-colors disabled:opacity-50 w-20 text-center"
+        className="flex items-center justify-center px-3 py-1 rounded-md text-xs font-semibold bg-red-400 hover:bg-red-500 text-white transition-colors disabled:opacity-50 w-full"
       >
         {loading ? "…" : "Delete"}
       </button>
