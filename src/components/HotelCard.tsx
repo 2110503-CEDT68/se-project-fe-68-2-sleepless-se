@@ -73,7 +73,7 @@ export default function HotelCard({
         {/* Button */}
         <div className="mt-auto pt-4">
           <Link href={`/hotel/${hotelId}`}>
-            <button className="w-full bg-[#1E293B] hover:bg-black text-white py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm active:scale-[0.98]">
+            <button className="w-full bg-sky-600 hover:bg-sky-700 text-white py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm active:scale-[0.98]">
               View & Book Now
             </button>
           </Link>

@@ -25,6 +25,7 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
     const [selectedStar, setSelectedStar] = useState<number | null>(null);
     const [hasBooked, setHasBooked] = useState(false);
 
+
     const [reviewStats, setReviewStats] = useState({
         totalCount: 0,
         avgRating: 0,
@@ -39,7 +40,13 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
             const rData = await getReviews(id);
             if (rData && rData.data) {
                 const reviews = rData.data;
-                setReviewsData(reviews);
+                const sortedReviews = reviews.sort(
+                    (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+
+                const displayReviews = sortedReviews.slice(0, 3);
+                setReviewsData(displayReviews);
+
 
                 const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
                 let totalRating = 0;
@@ -104,19 +111,13 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
     
                 {/* Header Container: Flexbox handles the positioning */}
                 <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-black text-slate-800">คะแนนรีวิวจากผู้เข้าพัก</h2>
+                    <h2 className="text-2xl font-black text-slate-800">Reivews from visitors</h2>
                     
-                    <Link 
-                        href={`/hotel/${id}/reviews`} 
-                        className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors underline underline-offset-4"
-                    >
-                        See All Reviews →
-                    </Link>
                 </div>
                     
                     {reviewStats.totalCount > 0 ? (
                         <>
-                            <div className="mb-10 pb-8 border-b border-slate-50">
+                            <div className="mb-5 pb-8 border-b border-slate-50">
                                 <RatingDistributionBar 
                                     starCounts={reviewStats.starCounts}
                                     totalCount={reviewStats.totalCount}
@@ -124,12 +125,15 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
                                 />
                             </div>
 
-                            {/* ส่วน Filter Tabs ที่แยกเป็น Component */}
-                            <StarFilterTabs 
-                                selectedStar={selectedStar}
-                                onSelectStar={setSelectedStar}
-                                starCounts={reviewStats.starCounts}
-                            />
+                            <div className="flex justify-between items-center mb-8">                           
+                                <h2 className="text-2xl font-black text-slate-800 border-b border-slate-50">Recent Reviews</h2>
+                                <Link 
+                                    href={`/hotel/${id}/reviews`} 
+                                    className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors underline underline-offset-4"
+                                >
+                                    See All Reviews →
+                                </Link>
+                            </div>
 
                             <div className="space-y-4 mt-10">
                                 {filteredReviews.length > 0 ? (
@@ -159,7 +163,7 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
                     ) : (
                         <div className="text-center py-20 bg-slate-50 rounded-3xl">
                             <div className="text-6xl mb-4 opacity-20">💬</div>
-                            <h3 className="text-xl font-bold text-slate-400">ยังไม่มีรีวิวสำหรับโรงแรมนี้</h3>
+                            <h3 className="text-xl font-bold text-slate-400">There're no reviews for this hotel... yet</h3>
                         </div>
                     )}
                 </div>

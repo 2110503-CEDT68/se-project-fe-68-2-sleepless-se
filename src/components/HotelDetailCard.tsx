@@ -98,18 +98,18 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
         )}
       </div>
       <div className="flex-1 w-full space-y-4 relative">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <h1 className="text-4xl font-black text-slate-900 tracking-tight">{hotelData.hotel_name}</h1>
-          <div className="flex gap-2 w-full md:w-auto">
+          <div className="flex gap-2 w-full md:w-auto flex-wrap">
             {hasBooked && (
               <button 
                 onClick={onReviewClick}
-                className="flex-1 md:flex-none bg-amber-400 hover:bg-amber-500 text-amber-950 px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm"
+                className="flex-1 bg-[#ef9322] hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm"
               >
                 Review
               </button>
             )}
-            <Link href={`/booking?hotel=${id}`} className="flex-1 md:flex-none bg-[#1E293B] hover:bg-black text-white px-8 py-2.5 rounded-xl font-bold text-center transition-all shadow-sm">
+            <Link href={`/booking?hotel=${id}`} className="flex-1 bg-sky-600 hover:bg-sky-700 text-white px-8 py-2.5 rounded-xl font-bold text-center transition-all shadow-sm">
               Book Now
             </Link>
 

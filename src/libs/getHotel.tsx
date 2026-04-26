@@ -3,7 +3,7 @@ export default async function getHotel(id: string) {
         const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/hotels/${id}`);
         
         if (!res.ok) {
-            throw new Error("Failed to fetch hotels");
+            throw new Error("Failed to fetch hotel");
         }
         
         const responseData = await res.json();
