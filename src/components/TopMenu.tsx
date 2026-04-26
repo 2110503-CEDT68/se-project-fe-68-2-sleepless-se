@@ -36,11 +36,13 @@ export default function TopMenu() {
     <div className="h-20 bg-white/90 backdrop-blur-md text-slate-800 fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 shadow-sm border-b border-slate-200 transition-all">
       {/**left side */}
       <div className="flex items-center space-x-10">
+        <Link href={"/"}>
         <img
           src="/img/logo.png"
           className="h-10 w-auto object-contain rounded-md"
           alt="logo"
         />
+        </Link>
 
         <nav className="hidden md:flex items-center space-x-8 text-base font-medium text-slate-700">
           <TopMenuItem title="Home" pageRef="/" />
