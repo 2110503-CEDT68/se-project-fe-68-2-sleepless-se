@@ -206,14 +206,37 @@ export default function BookingForm({ initialHotelId }: BookingFormProps) {
               </FormGroup>
 
               {/* Summary */}
-              {hotelId && checkIn && (
-                <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 text-sm">
-                  <p className="text-sky-700 font-semibold mb-1">Booking Summary</p>
-                  <p className="text-sky-600">
-                    {hotels.find(h => h.id === hotelId)?.hotel_name || '—'} · {nights} night{nights > 1 ? 's' : ''} · Check-in: {checkIn}
-                  </p>
-                </div>
-              )}
+              {hotelId && checkIn && (() => {
+                const selectedHotel = hotels.find(h => h.id === hotelId);
+                
+                const pricePerNight = selectedHotel?.price || 0; 
+                
+                // Calculate total
+                const totalPrice = pricePerNight * nights;
+
+                return (
+                  <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 text-sm flex flex-col gap-3">
+                    <p className="text-sky-700 font-semibold">Booking Summary</p>
+                    
+                    <div className="flex justify-between items-start text-sky-600">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-slate-700">{selectedHotel?.hotel_name || '—'}</span>
+                        <span>{nights} night{nights > 1 ? 's' : ''} · Check-in: {checkIn}</span>
+                      </div>
+                    </div>
+
+                    {/* Display the calculated price */}
+                    <div className="flex justify-between items-center pt-3 border-t border-sky-200">
+                      <span className="text-slate-600 font-medium">
+                        Total Price {pricePerNight > 0 && <span className="text-slate-400 font-normal">(${pricePerNight} × {nights})</span>}
+                      </span>
+                      <span className="text-xl font-bold text-sky-700">
+                        ${totalPrice.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Submit */}
               <button
