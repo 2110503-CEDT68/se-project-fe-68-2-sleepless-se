@@ -29,6 +29,10 @@ export default function BookingForm({ initialHotelId }: BookingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userColor, setUserColor] = useState('#0ea5e9');
 
+  const selectedHotel = hotels.find((h) => h.id === hotelId);
+  const pricePerNight = selectedHotel?.price || 0;
+  const totalPrice = pricePerNight * nights;
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (session?.user?.token) {
@@ -70,7 +74,7 @@ export default function BookingForm({ initialHotelId }: BookingFormProps) {
     }
     setIsSubmitting(true);
     try {
-      await createBooking(hotelId, checkIn, nights, session!.user.token);
+      await createBooking(hotelId, checkIn, nights, totalPrice, session!.user.token);
       alert("Booking Successful!");
       router.push('/cart');
     } catch (err: any) {
@@ -207,12 +211,6 @@ export default function BookingForm({ initialHotelId }: BookingFormProps) {
 
               {/* Summary */}
               {hotelId && checkIn && (() => {
-                const selectedHotel = hotels.find(h => h.id === hotelId);
-                
-                const pricePerNight = selectedHotel?.price || 0; 
-                
-                // Calculate total
-                const totalPrice = pricePerNight * nights;
 
                 return (
                   <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 text-sm flex flex-col gap-3">

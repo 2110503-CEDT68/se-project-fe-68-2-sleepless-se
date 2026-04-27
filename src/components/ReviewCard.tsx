@@ -10,7 +10,7 @@ interface ReviewCardProps {
   hotelId: string;
   reviewId: string;
   userName: string;
-  profileImageUrl: string | undefined;
+  profileImageUrl: string | null;
   comment: string;
   rating: number;
   status?: string;

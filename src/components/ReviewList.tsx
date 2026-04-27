@@ -6,7 +6,7 @@ import createReport from "@/libs/createReport";
 interface User {
   id: string;
   name: string;
-  profileImageUrl: string;
+  profileImageUrl?: string;
 }
 
 interface Review {
@@ -67,6 +67,7 @@ export default function ReviewList({
     );
   }
 
+
   return (
     <div className="flex flex-col gap-3 relative">
       {reviews.map((review) => (
@@ -75,7 +76,7 @@ export default function ReviewList({
           reviewId={String(review.id)}
           hotelId={review.hotelId}
           userName={review.userName}
-          profileImageUrl={review.user?.profileImageUrl}
+          profileImageUrl={review.user?.profileImageUrl || '#0ea5e9'}
           comment={review.comment}
           rating={review.rating}
           status={review.status}

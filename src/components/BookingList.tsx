@@ -108,6 +108,7 @@ export default function BookingList() {
                 <div className="text-slate-500 text-sm mt-3 space-y-1">
                   <p><span className="font-semibold text-slate-700">Check-in:</span> {checkIn}</p>
                   <p><span className="font-semibold text-slate-700">Check-out:</span> {checkOut}</p>
+                  <p><span className="font-semibold text-slate-700">Price:</span> {booking.price} THB</p>
                 </div>
               </div>
 

@@ -2,6 +2,7 @@ export default async function createBooking(
   hotelId: string, 
   checkInDate: string, 
   numOfNights: number, 
+  price: number,
   token: string
 ) {
   // 1. คำนวณหา checkOutDate 
@@ -19,7 +20,8 @@ export default async function createBooking(
     body: JSON.stringify({
       hotel: hotelId,                // ตรงกับชื่อฟิลด์ใน Schema (hotel)
       checkInDate: checkInDate,      // ตรงกับชื่อฟิลด์ใน Schema
-      checkOutDate: checkOut.toISOString(), // ส่ง checkOutDate ที่เราเพิ่งคำนวณไปให้
+      checkOutDate: checkOut.toISOString(),
+      price: price,
     }),
   });
 

@@ -1,25 +1,3 @@
-// ─── Venue (legacy) ───────────────────────────────────────────────────────────
-export interface VenueItem {
-  _id: string;
-  name: string;
-  address: string;
-  district: string;
-  province: string;
-  postalcode: string;
-  tel: string;
-  picture: string;
-  dailyrate: number;
-  __v: number;
-  id: string;
-}
-
-export interface VenueJson {
-  success: boolean;
-  count: number;
-  pagination: object;
-  data: VenueItem[];
-}
-
 // ─── Hotel ────────────────────────────────────────────────────────────────────
 export interface Hotel {
   _id: string;
@@ -65,6 +43,7 @@ export interface HotelsJson {
 export interface ReviewUser {
   _id: string;
   name: string;
+  profileImageUrl: string;
 }
 
 export interface Review {
@@ -83,13 +62,6 @@ export interface ReviewsJson {
 }
 
 // ─── Booking ──────────────────────────────────────────────────────────────────
-export interface BookingItem {
-  nameLastname: string;
-  tel: string;
-  venue: string;
-  bookDate: string;
-}
-
 export interface BookingFormProps {
   initialHotelId: string;
 }
