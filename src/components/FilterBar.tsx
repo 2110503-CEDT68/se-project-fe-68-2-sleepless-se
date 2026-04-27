@@ -3,6 +3,7 @@ import { use, useEffect, useState } from "react";
 import DropDownFilter from "./DropDownFilter";
 import getHotels from "@/libs/getHotels";
 import { Hotel } from "../../interface";
+import { ChevronDown } from "lucide-react";
 
 export default function FilterBar({
   provinceFilter,
@@ -78,12 +79,11 @@ export default function FilterBar({
         <div className="font-bold text-2xl text-blue-900">Filter</div>
         <div className="absolute right-2 top-1 cursor-pointer transition-all duration-300 ease-in-out" onClick={()=>setOpen(!isOpen)}
           style={{transform: isOpen? "rotateZ(180deg)":""}}
-          >▼</div>
+          ><ChevronDown /></div>
       </div>
       
       <div className= {` font-medium text-lg text-gray-700 flex flex-col gap-2  w-full  overflow-hidden transition-all duration-300 ease-in-out "max-h-0 opacity-0"
         ${isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}
-        md:max-h-[1000px] md:opacity-100
       `}>
       {/* เส้นคั่น */}
       <hr className="border-gray-200 my-2" />

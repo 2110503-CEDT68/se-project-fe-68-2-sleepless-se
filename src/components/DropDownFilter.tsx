@@ -30,13 +30,16 @@ export default function DropDownFilter({
         <div
           className="bg-blue-200/50 rounded-md p-2 transition-colors hover:bg-blue-200"
           onClick={() => {
-            openBy(isMulti ? "" : FilterBy)
+            openBy(isMulti ? "" : FilterBy);
           }}
         >
           <div className="flex flex-row justify-between items-center">
             <div>{value}</div>
-            {!isMulti && <ChevronDown />}
-            {isMulti && <ChevronUp />}
+            <ChevronDown
+              className={`transition-transform duration-300 ease-in-out ${
+                isMulti ? "rotate-180" : "rotate-0"
+              }`}
+            />
           </div>
         </div>
         {/* list filter */}
