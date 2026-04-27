@@ -1,5 +1,5 @@
 'use client';
-
+import Link from 'next/link';
 import { useState } from 'react';
 import { Rating } from '@mui/material';
 import updateReview from '@/libs/updateReview';
@@ -103,9 +103,12 @@ export default function ReviewCard({
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm flex gap-4 items-start w-full border border-slate-200">
       {/* Avatar */}
-      <div className="w-11 h-11 rounded-full bg-[#E0F2FE] text-[#0369A1] flex items-center justify-center font-bold text-lg shrink-0">
-        {userName.charAt(0).toUpperCase()}
-      </div>
+      <Link href={`/profile?userId=${authorId}`}>
+        <div className="w-11 h-11 rounded-full bg-[#E0F2FE] text-[#0369A1] flex items-center justify-center font-bold text-lg shrink-0">
+          {userName.charAt(0).toUpperCase()}
+        </div>
+      </Link>
+      
 
       {/* Content */}
       <div className="flex-1 min-w-0">

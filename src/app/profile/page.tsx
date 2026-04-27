@@ -1,5 +1,5 @@
 'use client'
-
+import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -10,6 +10,8 @@ import ProfileForm from '@/components/Profile/ProfileForm';
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('userId');
 
   // Master State
   const [userName, setUserName] = useState('');
