@@ -84,19 +84,24 @@ export default function HotelCatalog() {
   });
 
   return (
-    <div className="flex flex-row gap-5 p-8 w-full">
-      <FilterBar
-        provinceFilter={(e) => setProvince(e)}
-        districtFilter={(e) => setDistrict(e)}
-        regionFilter={(e) => setRegion(e)}
-        minPriceFilter={(e) => setMin(e)}
-        maxPriceFilter={(e) => setMax(e)}
-      />
-      <div className="flex-1">
-        <h2 className="text-3xl font-extrabold text-sky-900 mb-8 text-center">
+    <div className="p-8 mt-4">
+
+      <h2 className="text-3xl font-extrabold text-sky-900 mb-4 text-center">
           Explore Our Top Hotels
         </h2>
+    
+    <div className="flex flex-col md:flex-row gap-5 p-8 w-full">
+    
+        <FilterBar
+          provinceFilter={(e) => setProvince(e)}
+          districtFilter={(e) => setDistrict(e)}
+          regionFilter={(e) => setRegion(e)}
+          minPriceFilter={(e) => setMin(e)}
+          maxPriceFilter={(e) => setMax(e)}
+        />
 
+
+      <div className="flex-1">
         {/* Stars Filter Button */}
         <div className="flex flex-wrap gap-2 mb-5">
           <button
@@ -132,7 +137,7 @@ export default function HotelCatalog() {
         ) : (
           <>
             {hotels.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+              <div className="grid gap-10 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
                 {result
                   .sort(
                     (a, b) =>
@@ -159,6 +164,7 @@ export default function HotelCatalog() {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 }

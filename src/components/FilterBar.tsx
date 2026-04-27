@@ -28,6 +28,7 @@ export default function FilterBar({
   const [changeRegion, setRegion] = useState("select");
 
   const [openBy, setOpenBy] = useState("");
+  const [isOpen, setOpen] = useState(false);
 
   // handle change
   const handleProvinceChange = (province: string) => {
@@ -71,10 +72,19 @@ export default function FilterBar({
     );
   });
   return (
-    <div className="sticky top-[10%] self-start font-medium text-lg text-gray-700 flex flex-col gap-2 bg-white shadow-lg w-1/6 p-5 m-2 rounded-lg">
+    <div className="sticky top-[12%] self-start font-medium text-lg text-gray-700 flex flex-col gap-2 bg-white shadow-lg md:w-1/6 min-w-[200px] w-full p-5 m-2 rounded-lg z-10 relative ">
       {/* header */}
-      <div className="font-bold text-2xl text-blue-900">Filter</div>
-
+      <div className="flex flex-row relative">
+        <div className="font-bold text-2xl text-blue-900">Filter</div>
+        <div className="absolute right-2 top-1 cursor-pointer transition-all duration-300 ease-in-out" onClick={()=>setOpen(!isOpen)}
+          style={{transform: isOpen? "rotateZ(180deg)":""}}
+          >▼</div>
+      </div>
+      
+      <div className= {` font-medium text-lg text-gray-700 flex flex-col gap-2  w-full  overflow-hidden transition-all duration-300 ease-in-out "max-h-0 opacity-0"
+        ${isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}
+        md:max-h-[1000px] md:opacity-100
+      `}>
       {/* เส้นคั่น */}
       <hr className="border-gray-200 my-2" />
 
@@ -148,10 +158,10 @@ export default function FilterBar({
         />
       </div>
       {/* min / max box */}
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row justify-between items-center gap-2">
         <div>
           <div className="text-sm">From</div>
-          <div className="bg-gray-100 rounded-lg p-2 w-32">
+          <div className="bg-gray-100 rounded-lg p-2 w-full">
             <input
               type="number"
               className="bg-transparent w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none outline-none"
@@ -171,7 +181,7 @@ export default function FilterBar({
 
         <div>
           <div className="text-sm">To</div>
-          <div className="bg-gray-100 rounded-lg p-2 w-32">
+          <div className="bg-gray-100 rounded-lg p-2 w-full">
             <input
               type="number"
               className="bg-transparent w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none outline-none"
@@ -210,6 +220,7 @@ export default function FilterBar({
           Clear Filter
         </button>
       </div>
+    </div>
     </div>
   );
 }
