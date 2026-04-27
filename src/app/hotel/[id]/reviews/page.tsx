@@ -1,19 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect, use, useMemo } from 'react';
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect, use, useMemo } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 
-import getReviews from '@/libs/getReviews';
-import getHotel from '@/libs/getHotel';
+import getReviews from "@/libs/getReviews";
+import getHotel from "@/libs/getHotel";
+import createReport from "@/libs/createReport";
 
-import ReviewCard from '@/components/ReviewCard';
-import RatingDistributionBar from '@/components/RatingDistributionBar';
-import ReportModal from '@/components/ReportModal';
+import ReviewCard from "@/components/ReviewCard";
+import RatingDistributionBar from "@/components/RatingDistributionBar";
+import ReportModal from "@/components/ReportModal";
 
-import type { Review } from '../../../../../interface';
+import type { Review } from "../../../../../interface";
 
-export default function AllReviewsPage({ params }: { params: Promise<{ id: string }> }) {
+export default function AllReviewsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const { data: session } = useSession();
 
@@ -26,7 +31,7 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
 
   // Pagination & Filters State
   const [page, setPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const limit = 5; // Number of reviews per page
 
@@ -74,11 +79,13 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
 
       setReviewStats({
         totalCount: fetchedReviews.length,
-        avgRating: fetchedReviews.length ? totalRating / fetchedReviews.length : 0,
+        avgRating: fetchedReviews.length
+          ? totalRating / fetchedReviews.length
+          : 0,
         starCounts: counts,
       });
     } catch (err) {
-      console.error('Failed to fetch data:', err);
+      console.error("Failed to fetch data:", err);
     } finally {
       setLoading(false);
     }
@@ -105,7 +112,7 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
 
     // 2. Sort by Rating
     filtered.sort((a, b) => {
-      if (sortOrder === 'desc') {
+      if (sortOrder === "desc") {
         return b.rating - a.rating; // High to Low
       } else {
         return a.rating - b.rating; // Low to High
@@ -118,12 +125,15 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
   // Calculate Pagination Variables
   const totalPages = Math.ceil(processedReviews.length / limit) || 1;
   const startIndex = (page - 1) * limit;
-  const currentDisplayedReviews = processedReviews.slice(startIndex, startIndex + limit);
+  const currentDisplayedReviews = processedReviews.slice(
+    startIndex,
+    startIndex + limit,
+  );
 
   // ==========================================
   // 4. EVENT HANDLERS
   // ==========================================
-  const handleSortChange = (val: 'asc' | 'desc') => {
+  const handleSortChange = (val: "asc" | "desc") => {
     setSortOrder(val);
     setPage(1); // Reset to first page upon sorting change
   };
@@ -134,28 +144,18 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
   };
 
   const handleReportSubmit = async (reviewId: string, reason: string) => {
+    if (!session?.user?.token) {
+      alert("You must be logged in to report a review.");
+      return;
+    }
     try {
-      const response = await fetch(`https://se-be-9w6y.onrender.com/api/v1/reviews/${reviewId}/report`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user?.token}`,
-        },
-        body: JSON.stringify({ reason }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('Reported successfully!');
-        setIsModalOpen(false);
-        fetchAllData(); // Refresh data to reflect any status changes from the backend
-      } else {
-        alert(data.msg || 'Something went wrong');
-      }
-    } catch (error) {
-      console.error('Report Error:', error);
-      alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์');
+      await createReport(reviewId, reason, session.user.token);
+      alert("Reported successfully!");
+      setIsModalOpen(false);
+      fetchAllData();
+    } catch (error: any) {
+      console.error("Report Error:", error);
+      alert(error.message || "Something went wrong while reporting");
     }
   };
 
@@ -173,11 +173,12 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
   return (
     <main className="min-h-screen bg-slate-100 pt-28 pb-10 px-4 flex flex-col items-center">
       <div className="w-full max-w-2xl">
-        
         {/* Header Section */}
         <div className="flex items-center gap-4 mb-6">
           <Link href={`/hotel/${id}`} className="text-2xl">
-            <div style={{ transform: 'rotate(90deg) scaleX(2)', fontSize: '30px' }}>
+            <div
+              style={{ transform: "rotate(90deg) scaleX(2)", fontSize: "30px" }}
+            >
               v
             </div>
           </Link>
@@ -194,7 +195,7 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
           {/* Sort Dropdown */}
           <select
             value={sortOrder}
-            onChange={(e) => handleSortChange(e.target.value as 'asc' | 'desc')}
+            onChange={(e) => handleSortChange(e.target.value as "asc" | "desc")}
             className="px-3 py-2 rounded-lg bg-slate-400 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
           >
             <option value="desc">Rating ↓</option>
@@ -222,8 +223,8 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
             onClick={() => handleFilterChange(null)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
               filterRating === null
-                ? 'bg-slate-700 text-white border-slate-700'
-                : 'bg-white text-slate-600 hover:bg-slate-50'
+                ? "bg-slate-700 text-white border-slate-700"
+                : "bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
             All
@@ -235,11 +236,11 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
               onClick={() => handleFilterChange(star)}
               className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
                 filterRating === star
-                  ? 'bg-yellow-400 text-white border-yellow-400'
-                  : 'bg-white text-slate-600 hover:bg-slate-50'
+                  ? "bg-yellow-400 text-white border-yellow-400"
+                  : "bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >
-              {'★'.repeat(star)}
+              {"★".repeat(star)}
             </button>
           ))}
         </div>
@@ -248,15 +249,17 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
         <div className="flex flex-col gap-3 min-h-[300px]">
           {currentDisplayedReviews.length === 0 ? (
             <div className="flex items-center justify-center h-full py-10">
-              <p className="text-slate-400 text-sm">No reviews found matching your filter.</p>
+              <p className="text-slate-400 text-sm">
+                No reviews found matching your filter.
+              </p>
             </div>
           ) : (
             currentDisplayedReviews.map((review) => {
               // Safely extract user information depending on populated state
               const authorId =
-                typeof review.user === 'object' ? review.user._id : review.user;
+                typeof review.user === "object" ? review.user._id : review.user;
               const userName =
-                typeof review.user === 'object' ? review.user.name : 'User';
+                typeof review.user === "object" ? review.user.name : "User";
 
               return (
                 <ReviewCard
@@ -317,7 +320,6 @@ export default function AllReviewsPage({ params }: { params: Promise<{ id: strin
           onSubmit={handleReportSubmit}
           reviewId={selectedReviewId}
         />
-        
       </div>
     </main>
   );
