@@ -82,8 +82,10 @@ export default function FilterBar({
           ><ChevronDown /></div>
       </div>
       
-      <div className= {` font-medium text-lg text-gray-700 flex flex-col gap-2  w-full  overflow-hidden transition-all duration-300 ease-in-out "max-h-0 opacity-0"
-        ${isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}
+      <div className={`
+        font-medium text-lg text-gray-700 flex flex-col gap-2 w-full 
+        overflow-hidden transition-all duration-300 ease-in-out
+        ${isOpen ? "max-h-[1500px] opacity-100" : "max-h-0 opacity-0"}
       `}>
       {/* เส้นคั่น */}
       <hr className="border-gray-200 my-2" />
@@ -190,9 +192,17 @@ export default function FilterBar({
               value={maxPrice}
               onChange={(e) => {
                 const val = Number(e.target.value);
-                if (val >= 0 && val <= maxFromData && val >= minPrice) {
-                  setMax(val);
-                  maxPriceFilter(val);
+                setMax(val); 
+              }}
+              onBlur={() => {
+                if (maxPrice < minPrice) {
+                  setMax(minPrice);
+                  maxPriceFilter(minPrice);
+                } else if (maxPrice > maxFromData) {
+                  setMax(maxFromData);
+                  maxPriceFilter(maxFromData);
+                } else {
+                  maxPriceFilter(maxPrice);
                 }
               }}
             />
