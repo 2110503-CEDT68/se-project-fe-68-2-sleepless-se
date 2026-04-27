@@ -46,6 +46,7 @@ export type HotelUpdateData = {
   region: string;
   postalcode: string;
   district: string;
+  price:number;
 };
 
 export interface HotelJson {
