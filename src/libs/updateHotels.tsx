@@ -11,6 +11,7 @@ export default async function updateHotel(
     region: string;
     postalcode: string;
     district: string;
+    price: number;
   },
   token: string
 ) {
@@ -20,7 +21,8 @@ export default async function updateHotel(
     province: updatedData.province,
     region: updatedData.region,
     postalcode: updatedData.postalcode,
-    description: updatedData.description
+    description: updatedData.description,
+    price: updatedData.price
   });
   const res = await fetch(
     `https://se-be-9w6y.onrender.com/api/v1/hotels/${id}`,
@@ -38,7 +40,8 @@ export default async function updateHotel(
         description: updatedData.description,
         region: updatedData.region,
         postalcode: updatedData.postalcode,
-        province: updatedData.province
+        province: updatedData.province,
+        price: updatedData.price
       }),
     }
   );

@@ -7,7 +7,7 @@ interface HotelCardProps {
   hotelName: string;
   address: string;
   telephone: string;
-  imageUrl: string;
+  imageURL: string;
   avgRating?: number;
   reviewCount?: number;
 }
@@ -17,7 +17,7 @@ export default function HotelCard({
   hotelName,
   address,
   telephone,
-  imageUrl,
+  imageURL,
   avgRating = 0,
   reviewCount = 0,
 }: HotelCardProps) {
@@ -25,12 +25,11 @@ export default function HotelCard({
     <div className="w-full bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group h-full border border-slate-200">
       {/* Image */}
       <div className="w-full h-[220px] relative bg-slate-100 overflow-hidden">
-        <Image
-          src={imageUrl || "/img/sukhothai.jpg"}
-          alt={hotelName}
-          fill={true}
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+        {imageURL ? (
+          <Image src={imageURL} alt={hotelName} className="wobject-cover group-hover:scale-105 transition-transform duration-500" fill/>
+        ) : (
+          <span className="font-bold text-slate-400 text-xl">No Photo</span>
+        )}
       </div>
 
       <div className="p-7 flex flex-col flex-grow space-y-4 ">
