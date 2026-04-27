@@ -15,6 +15,7 @@ type HotelEditProp = {
     region: string;
     postalcode: string;
     district: string;
+    price: number;
 
 
     onSave: (data: {
@@ -28,12 +29,13 @@ type HotelEditProp = {
         region: string;
         postalcode: string;
         district: string;
+        price: number;
     }) => void;
 
     onCancel: () => void;
 };
 
-export default function HotelEditPanel({name,description,location,telephone,email,photoURL,district,postalcode,region,province,onSave,onCancel}:HotelEditProp){
+export default function HotelEditPanel({name,description,location,telephone,email,photoURL,district,postalcode,region,province,price,onSave,onCancel}:HotelEditProp){
     
     const [hotelName, setHotel] = useState(name || "");
     const [hotelDescription, setDescription] = useState(description || "");
@@ -45,6 +47,7 @@ export default function HotelEditPanel({name,description,location,telephone,emai
     const [postalCode,setPostal] = useState(postalcode||"");
     const [hotelprovince,setProvince] = useState(province||"");
     const [hotelregion, setRegion] = useState(region||"");
+    const [hotelPrice, setPrice] = useState(price||0);
    
 
     useEffect(() => {
@@ -58,6 +61,7 @@ export default function HotelEditPanel({name,description,location,telephone,emai
     setDistrict(district||"");
     setPostal(postalcode||"");
     setProvince(province||"");
+    setPrice(price||0);
 }, [email]);
     
     return(
@@ -76,6 +80,7 @@ export default function HotelEditPanel({name,description,location,telephone,emai
                         
                     </div>
                     <div className={styles.InformationWrapper}>
+                        <h2> <div className={styles.InputWrapper}><strong>Price:</strong><input type="number" onChange={(e)=>setPrice(parseFloat(e.target.value))} value={hotelPrice}/><img  className={styles.EditIcon} src="/edit.svg" /> </div></h2>
                         <h2> <div className={styles.InputWrapper}><strong>Address:</strong> <input type="text" onChange={(e)=>setLocation(e.target.value)} value={hotelLocation}/><img  className={styles.EditIcon} src="/edit.svg" /> </div></h2>
                         <h2> <div className={styles.InputWrapper}><strong>Province:</strong> <input type="text" onChange={(e)=>setProvince(e.target.value)} value={hotelprovince}/><img  className={styles.EditIcon} src="/edit.svg" /> </div></h2>
                         <h2> <div className={styles.InputWrapper}><strong>Regoin:</strong> <input type="text" onChange={(e)=>setRegion(e.target.value)} value={hotelregion}/><img  className={styles.EditIcon} src="/edit.svg" /> </div></h2>
@@ -101,6 +106,7 @@ export default function HotelEditPanel({name,description,location,telephone,emai
                                     region: hotelregion,
                                     district: hotelDistrict,
                                     postalcode: postalCode,
+                                    price: hotelPrice,
                                     })
                                 }
                                 >

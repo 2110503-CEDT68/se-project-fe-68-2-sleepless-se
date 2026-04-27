@@ -26,6 +26,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
   const [hotelEmail, setEmail] = useState("Dummy Email");
   const [hotelPhotoURL, setPhotoURL] = useState("");
   const [isEditable, setEditable] = useState(false);
+  const [price, setPrice] = useState(0);
 
   useEffect(() => {
         const fetchHotelData = async () => {
@@ -44,6 +45,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
                 setPostal(hotelData.postalcode);
                 setProvince(hotelData.province);
                 setPhotoURL(hotelData? hotelData.imageURL:"");
+                setPrice(hotelData.price);
 
             } catch (error) {
                 console.error("Error loading hotel:", error);
@@ -94,6 +96,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
         setPostal(updatedData.postalcode);
         setRegion(updatedData.region);
         setIsEdit(false); 
+        setPrice(updatedData.price);
 
     } catch (err) {
         console.error("Update failed:", err);
@@ -102,7 +105,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
 
 
   return (
-    <div className="bg-white rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row gap-8 items-center border border-slate-200">
+    <div className="bg-white rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row gap-8 border border-slate-200">
       <div className="w-full md:w-72 aspect-[4/3] bg-[#E2E8F0] rounded-[1.5rem] overflow-hidden shrink-0 flex items-center justify-center relative">
         {hotelData.picture || hotelData.imageURL ? (
           <Image src={hotelData.picture || hotelData.imageURL} alt="hotel" className="w-full h-full object-cover" fill/>
@@ -130,16 +133,6 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
         </div>
 
         <div className="absolute bottom-0 right-0">
-          {session && (
-                    <>
-                        {isEditable && (
-                            <button onClick={()=> setIsEdit(true)}
-                                    className="flex-1 md:flex-none bg-blue-400 hover:bg-amber-500 text-blue-550 px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm">
-                                Edit
-                            </button>
-                        )}
-                    </>
-                )}
 
             <HotelEditModal isOpen={isEditOpen}>
                 { isEditOpen && (
@@ -154,6 +147,7 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
                     district={hotelData.District}
                     province={hotelData.province}
                     postalcode={hotelData.postalCode}
+                    price = {hotelData.price}
                     onSave={handleEdit}
                     onCancel={() => setIsEdit(false)}
                 />
@@ -162,16 +156,36 @@ export default function HotelDetailCard({ hotelData, id, hasBooked, onReviewClic
 
             </HotelEditModal>
         </div>
+        <h3 className="text-green-600 font-bold text-3xl text-center md:text-left">{price} THB</h3>
+        <p className="text-slate-400 text-lg">{hotelDescription || "No description available for this hotel."}</p>
         
-        <p className="text-slate-400 text-lg">{hotelData.description || "No description available for this hotel."}</p>
-        
-        <div className="pt-4 flex flex-wrap gap-6 text-slate-500 font-medium">
-          <span className="flex items-center gap-2">
-            <span className="text-rose-500 text-xl">📍</span> {hotelData.address || hotelData.province}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="text-rose-500 text-xl">📞</span> {hotelData.telephone}
-          </span>
+           
+        <div className="pt-4 flex gap-6 font-medium flex-row relative">
+         
+          <div className="pt-4 flex flex-wrap gap-6 text-slate-500 font-medium flex-col">
+            
+            <span className="flex items-center gap-2">
+              <span className="text-rose-500 text-xl">📍</span> {hotelLocation} {province} {hotelDistrict} {postalCode}
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="text-rose-500 text-xl">📞</span> {hotelTelephone}
+            </span>
+          </div>
+
+          <div className="flex flex-1 relative min-w-[50px]">
+            <div className="absolute bottom-0 right-0">
+                  {session && (
+                        <>
+                            {isEditable && (
+                                <button onClick={()=> setIsEdit(true)}
+                                        className="flex-1 bg-blue-400 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm max-h-[50px] max-w-[150px]" >
+                                    Edit
+                                </button>
+                            )}
+                        </>
+                    )}
+              </div>
+            </div>
         </div>
       </div>
     </div>
