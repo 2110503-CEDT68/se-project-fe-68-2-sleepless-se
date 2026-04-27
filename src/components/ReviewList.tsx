@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReviewCard from "./ReviewCard";
 import ReportModal from "./ReportModal"; // นำเข้า Modal ที่เราจะสร้าง
+import createReport from "@/libs/createReport";
 
 interface Review {
   id: number;
@@ -29,36 +30,27 @@ export default function ReviewList({
   token,
   onRefresh,
 }: ReviewListProps) {
-  // 1. สร้าง State ควบคุม Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null);
 
-  // 2. ฟังก์ชันสำหรับยิง API ไปยัง Backend ของคุณ
   const handleReportSubmit = async (reviewId: string, reason: string) => {
-    try {
-      const response = await fetch(`/api/v1/reviews/${reviewId}/report`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ส่ง Token ไปด้วย
-        },
-        body: JSON.stringify({ reason }),
-      });
+  if (!token) {
+    alert("You must be logged in to report a review.");
+    return;
+  }
 
-      const data = await response.json();
+  try {
+    await createReport(reviewId, reason, token);
 
-      if (data.success) {
-        alert("Reported successfully!");
-        setIsModalOpen(false); // ปิด Modal
-        if (onRefresh) onRefresh(); // รีเฟรชข้อมูลรีวิวใหม่
-      } else {
-        alert(data.msg || "Something went wrong");
-      }
-    } catch (error) {
-      console.error("Report Error:", error);
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
-    }
-  };
+    alert("Reported successfully!");
+    setIsModalOpen(false); 
+    if (onRefresh) onRefresh(); 
+    
+  } catch (error: any) {
+    console.error("Report Error:", error);
+    alert(error.message || "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+  }
+};
 
   if (reviews.length === 0) {
     return (
