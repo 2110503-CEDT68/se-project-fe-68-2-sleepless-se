@@ -267,6 +267,7 @@ export default function AllReviewsPage({
                   hotelId={id}
                   reviewId={review._id}
                   userName={userName}
+                  profileImageUrl=""
                   comment={review.comment}
                   rating={review.rating}
                   status={review.status}
