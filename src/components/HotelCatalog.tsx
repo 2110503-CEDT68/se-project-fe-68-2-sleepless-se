@@ -6,7 +6,6 @@ import getReviews from "@/libs/getReviews";
 import { Hotel } from "../../interface";
 import FilterBar from "./FilterBar";
 
-
 interface HotelRating {
   avgRating: number;
   reviewCount: number;
@@ -32,22 +31,28 @@ export default function HotelCatalog() {
       setLoading(true);
       try {
         const hotelList = await getHotels({
-          minRating: selectedRating !== "" ? Number(selectedRating) : undefined
+          minRating: selectedRating !== "" ? Number(selectedRating) : undefined,
         });
         setHotels(hotelList);
 
         // Fetch all reviews in parallel
-        const ratingMap: Record<string,HotelRating> = {};
+        const ratingMap: Record<string, HotelRating> = {};
         const reviewResults = await Promise.all(
           hotelList.map((hotel: Hotel) => getReviews(hotel._id)),
         );
 
         hotelList.forEach((hotel: Hotel, i: number) => {
           const res = reviewResults[i];
-          ratingMap[hotel._id] = {
-            avgRating: res?.avgRating ? parseFloat(res.avgRating) : 0,
-            reviewCount: res?.data?.length ?? 0,
-          };
+          if (
+            selectedRating === "" ||
+            (res?.avgRating &&
+              parseFloat(res.avgRating) >= Number(selectedRating))
+          ) {
+            ratingMap[hotel._id] = {
+              avgRating: res?.avgRating ? parseFloat(res.avgRating) : 0,
+              reviewCount: res?.data?.length ?? 0,
+            };
+          }
         });
         setRatings(ratingMap);
       } catch (error) {
@@ -58,7 +63,7 @@ export default function HotelCatalog() {
     };
 
     fetchData();
-  }, []);
+  }, [selectedRating]);
 
   if (loading) {
     return (
@@ -92,60 +97,67 @@ export default function HotelCatalog() {
           Explore Our Top Hotels
         </h2>
 
-      {/* Stars Filter Button */}
+        {/* Stars Filter Button */}
         <div className="flex flex-wrap gap-2 mb-5">
           <button
             onClick={() => setSelectedRating("")}
             className={`px-3 py-1 rounded-full text-sm border ${
               selectedRating === null
-                ? 'bg-slate-700 text-white' :
-                'bg-white text-slate-600'
+                ? "bg-slate-700 text-white"
+                : "bg-white text-slate-600"
             }`}
           >
             All
           </button>
 
-          {[5,4,3,2,1].map((star) => (
+          {[5, 4, 3, 2, 1].map((star) => (
             <button
               key={star}
               onClick={() => setSelectedRating(star)}
               className={`px-3 py-1 rounded-full text-sm border ${
                 selectedRating === star
-                  ? 'bg-yellow-400 text-white' : 
-                  'bg-white text-slate-600'
+                  ? "bg-yellow-400 text-white"
+                  : "bg-white text-slate-600"
               }`}
             >
-              {'★'.repeat(star)}
+              {"★".repeat(star)}
             </button>
           ))}
         </div>
 
-{loading ? (
-        <div className="text-center text-slate-500 mt-10">Searching for perfect hotels... 🌊</div>
-      ) : (
-        <>
-          {hotels.length > 0 ? (
+        {loading ? (
+          <div className="text-center text-slate-500 mt-10">
+            Searching for perfect hotels... 🌊
+          </div>
+        ) : (
+          <>
+            {hotels.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-                {result.map((hotel) => (
-                  <HotelCard
-                    key={hotel._id}
-                    hotelId={hotel._id}
-                    hotelName={hotel.hotel_name}
-                    address={hotel.address}
-                    telephone={hotel.telephone}
-                    imageURL={hotel.imageURL}
-                    avgRating={ratings[hotel._id]?.avgRating ?? 0}
-                    reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
-                  />
-                ))}
+                {result
+                  .sort(
+                    (a, b) =>
+                      ratings[b._id]?.avgRating - ratings[a._id]?.avgRating,
+                  )
+                  .map((hotel) => (
+                    <HotelCard
+                      key={hotel._id}
+                      hotelId={hotel._id}
+                      hotelName={hotel.hotel_name}
+                      address={hotel.address}
+                      telephone={hotel.telephone}
+                      imageURL={hotel.imageURL}
+                      avgRating={ratings[hotel._id]?.avgRating ?? 0}
+                      reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
+                    />
+                  ))}
               </div>
-          ) : (
-            <div className="text-center py-20 text-slate-400">
-              No hotels found with this rating. Try another filter!
-            </div>
-          )}
-        </>
-      )}
+            ) : (
+              <div className="text-center py-20 text-slate-400">
+                No hotels found with this rating. Try another filter!
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
