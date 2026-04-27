@@ -50,7 +50,7 @@ export default function TopMenu() {
           {session && (
             <TopMenuItem
               title={
-                session.user?.role === "admin" ? "Bookings" : "My Bookings"
+                session.user?.role === "admin" || session.user?.role === "manager" ? "Bookings" : "My Bookings"
               }
               pageRef="/cart"
             />
