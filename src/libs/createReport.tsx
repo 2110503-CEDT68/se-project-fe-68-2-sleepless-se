@@ -3,7 +3,7 @@ export default async function createReport(
   reason: string, 
   token: string
 ) {
-  const response = await fetch(`/api/v1/reviews/${reviewId}/report`, {
+  const response = await fetch(`https://se-be-9w6y.onrender.com/api/v1/reviews/${reviewId}/report`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
