@@ -13,7 +13,20 @@ export default function ProfileIcon({
 }: ProfileIconProps) {
   
   const initial = name && name !== 'No Name Provided' ? name.charAt(0).toUpperCase() : '?';
-  const bgColor = color || '#0ea5e9'; 
+  
+  const cleanColor = color?.trim();
+
+  let bgColor = '#0ea5e9'; 
+  
+  if (cleanColor && cleanColor !== "null" && cleanColor !== "undefined") {
+    if (cleanColor.length === 6 && !cleanColor.startsWith('#')) {
+      bgColor = `#${cleanColor}`;
+    } else {
+      bgColor = cleanColor;
+    }
+  } 
+
+  console.log(`ProfileIcon Render -> Name: ${name} | Raw Color Prop:`, color, `| Final bgColor:`, bgColor);
 
   return (
     <div 
