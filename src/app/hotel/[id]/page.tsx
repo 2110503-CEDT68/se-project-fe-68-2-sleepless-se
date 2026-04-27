@@ -4,7 +4,6 @@ import { useState, useEffect, use } from "react";
 import { useSession } from 'next-auth/react';
 
 import HotelDetailCard from "@/components/HotelDetailCard"; // Component ใหม่
-import StarFilterTabs from "@/components/StarFilterTabs";
 import ReviewModal from "@/components/ReviewModal";
 import ReviewCard from "@/components/ReviewCard";
 import RatingDistributionBar from "@/components/RatingDistributionBar";
@@ -13,6 +12,8 @@ import getHotel from "@/libs/getHotel";
 import getReviews from "@/libs/getReviews";
 import getBookings from "@/libs/getBookings";
 import Link from "next/link";
+import createReport from "@/libs/createReport";
+import ReportModal from "@/components/ReportModal";
 
 export default function HotelPage({ params }: { params: Promise<{ id: string }> }) {
     const { data: session } = useSession();
@@ -22,8 +23,10 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
     const [hotelData, setHotelData] = useState<any>(null);
     const [reviewsData, setReviewsData] = useState<any[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [selectedStar, setSelectedStar] = useState<number | null>(null);
     const [hasBooked, setHasBooked] = useState(false);
+    const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null);
 
 
     const [reviewStats, setReviewStats] = useState({
@@ -64,6 +67,22 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
             }
         } catch (error) { console.error(error); } finally { setIsLoading(false); }
     };
+
+    const handleReportSubmit = async (reviewId: string, reason: string) => {
+        if (!session?.user?.token) {
+          alert("You must be logged in to report a review.");
+          return;
+        }
+        try {
+          await createReport(reviewId, reason, session.user.token);
+          alert("Reported successfully!");
+          setIsModalOpen(false);
+          fetchHotelAndReviews();
+        } catch (error: any) {
+          console.error("Report Error:", error);
+          alert(error.message || "Something went wrong while reporting");
+        }
+      };
 
     const checkUserBooking = async () => {
         if (!session?.user?.token) return;
@@ -152,6 +171,10 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
                                             currentUserRole={(session?.user as any)?.role}
                                             token={session?.user?.token}
                                             onRefresh={fetchHotelAndReviews}
+                                            onOpenReport={() => {
+                                                setSelectedReviewId(review._id);
+                                                setIsReportModalOpen(true);
+                                            }}
                                         />
                                     ))
                                 ) : (
@@ -177,6 +200,14 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
                     onSubmit={handleReviewSubmit} 
                 />
             )}
+
+            {/* Report Reason Modal */}
+            <ReportModal
+                isOpen={isReportModalOpen}
+                onClose={() => setIsReportModalOpen(false)}
+                onSubmit={handleReportSubmit}
+                reviewId={selectedReviewId}
+            />
         </main>
     );
 }
