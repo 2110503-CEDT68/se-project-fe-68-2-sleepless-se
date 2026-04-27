@@ -44,7 +44,7 @@ export default function DropDownFilter({
         </div>
         {/* list filter */}
         {isMulti && (
-          <div className="bg-white absolute z-50 shadow-lg w-full ">
+          <div className="bg-white absolute z-50 shadow-lg w-full max-h-60 overflow-y-auto">
             {mockOptions.map((option) => (
               <div
                 key={option}
