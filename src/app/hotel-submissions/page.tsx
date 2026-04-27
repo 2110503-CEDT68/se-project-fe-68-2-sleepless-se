@@ -22,11 +22,16 @@ interface Manager {
 
 interface HotelData {
   hotel_name: string;
-  address?: string;
-  telephone?: string;
-  email?: string;
-  description?: string;
-  imageUrl?: string;
+  description: string;
+  address: string;
+  telephone: string;
+  //email: string;
+  photoURL: string;
+  province:string;
+  region: string;
+  postalcode: string;
+  district: string;
+  price: number;
 }
 
 interface HotelSubmission {
@@ -117,6 +122,7 @@ export default function HotelSubmissionPage() {
         const result = await getHotelSubmissions(currentToken, 'PENDING');
         
         if (result.success) {
+          console.log("Backend Response:", result.data[0]);
           setSubmissions(result.data);
         }
       } catch (err) {
@@ -237,9 +243,9 @@ export default function HotelSubmissionPage() {
           {selectedSubmission && (
             <div className="flex flex-col gap-3">
               {/* Optional Image */}
-              {selectedSubmission.hotelData.imageUrl ? (
+              {selectedSubmission.hotelData.photoURL ? (
                  <img 
-                   src={selectedSubmission.hotelData.imageUrl} 
+                   src={selectedSubmission.hotelData.photoURL} 
                    alt="Hotel" 
                    className="w-full h-40 object-cover rounded-lg mb-2" 
                  />
@@ -256,10 +262,27 @@ export default function HotelSubmissionPage() {
                 📍 {selectedSubmission.hotelData.address || "No address provided"}
               </p>
               <p className="font-medium text-slate-700">
-                📞 {selectedSubmission.hotelData.telephone || "No phone provided"}
+                📍 {selectedSubmission.hotelData.province || "No province provided"}
               </p>
               <p className="font-medium text-slate-700">
+                📍 {selectedSubmission.hotelData.region || "No region provided"}
+              </p>
+              <p className="font-medium text-slate-700">
+                📍 {selectedSubmission.hotelData.district || "No district provided"}
+              </p>
+              <p className="font-medium text-slate-700">
+                📍 {selectedSubmission.hotelData.postalcode || "No postal code provided"}
+              </p>
+              <p className="font-medium text-slate-700">
+                📞 {selectedSubmission.hotelData.telephone || "No phone provided"}
+              </p>
+              {/*
+              <p className="font-medium text-slate-700">
                 ✉️ {selectedSubmission.hotelData.email || "No email provided"}
+              </p>
+              */}
+              <p className="font-medium text-slate-700">
+                Price: {selectedSubmission.hotelData.price || "No price provided"}
               </p>
               <div className="mt-2 text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">
                 {selectedSubmission.hotelData.description || "No description available."}
