@@ -143,6 +143,7 @@ export default function HotelPage({ params }: { params: Promise<{ id: string }> 
                                             hotelId={id}
                                             reviewId={review._id}
                                             userName={typeof review.user === 'object' ? review.user?.name : 'Anonymous'}
+                                            profileImageUrl={review.user?.profileImageUrl}
                                             comment={review.comment}
                                             rating={review.rating}
                                             status={review.status}

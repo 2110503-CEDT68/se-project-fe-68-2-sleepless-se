@@ -1,14 +1,16 @@
 'use client';
-import Link from 'next/link';
+
 import { useState } from 'react';
 import { Rating } from '@mui/material';
 import updateReview from '@/libs/updateReview';
 import deleteReview from '@/libs/deleteReview';
+import ProfileIcon from './Profile/ProfileIcon';
 
 interface ReviewCardProps {
   hotelId: string;
   reviewId: string;
   userName: string;
+  profileImageUrl: string | undefined;
   comment: string;
   rating: number;
   status?: string;
@@ -25,6 +27,7 @@ export default function ReviewCard({
   hotelId,
   reviewId,
   userName,
+  profileImageUrl,
   comment,
   rating,
   status,
@@ -103,11 +106,11 @@ export default function ReviewCard({
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm flex gap-4 items-start w-full border border-slate-200">
       {/* Avatar */}
-      <Link href={`/profile?userId=${authorId}`}>
-        <div className="w-11 h-11 rounded-full bg-[#E0F2FE] text-[#0369A1] flex items-center justify-center font-bold text-lg shrink-0">
-          {userName.charAt(0).toUpperCase()}
-        </div>
-      </Link>
+      <ProfileIcon 
+          name={userName} 
+          color={profileImageUrl}
+          className="w-11 h-11 text-lg" 
+      />
       
 
       {/* Content */}
