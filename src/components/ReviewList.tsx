@@ -3,6 +3,12 @@ import ReviewCard from "./ReviewCard";
 import ReportModal from "./ReportModal"; // นำเข้า Modal ที่เราจะสร้าง
 import createReport from "@/libs/createReport";
 
+interface User {
+  id: string;
+  name: string;
+  profileImageUrl: string;
+}
+
 interface Review {
   id: number;
   hotelId: string;
@@ -11,6 +17,7 @@ interface Review {
   rating: number;
   status?: string;
   authorId?: string;
+  user?: User;
 }
 
 interface ReviewListProps {
@@ -68,6 +75,7 @@ export default function ReviewList({
           reviewId={String(review.id)}
           hotelId={review.hotelId}
           userName={review.userName}
+          profileImageUrl={review.user?.profileImageUrl}
           comment={review.comment}
           rating={review.rating}
           status={review.status}
