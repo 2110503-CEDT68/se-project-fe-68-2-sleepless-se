@@ -1,0 +1,11 @@
+services:
+  # --- YOUR NEXT.JS APP ---
+  web:
+    build: .
+    container_name: my-next-app
+    ports:
+      - "3000:3000"
+    environment:
+      # The connection string to your MongoDB container
+      - MONGODB_URI=${MONGODB_URI}
+
