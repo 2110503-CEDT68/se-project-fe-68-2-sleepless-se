@@ -5,12 +5,13 @@ import { Rating } from '@mui/material';
 import updateReview from '@/libs/updateReview';
 import deleteReview from '@/libs/deleteReview';
 import ProfileIcon from './Profile/ProfileIcon';
+import createReport from '@/libs/createReport';
 
 interface ReviewCardProps {
   hotelId: string;
   reviewId: string;
   userName: string;
-  profileImageUrl: string | undefined;
+  profileImageUrl: string | null;
   comment: string;
   rating: number;
   status?: string;
@@ -53,6 +54,7 @@ export default function ReviewCard({
   const [hoverRating, setHoverRating] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = async () => {
     if (!token) return;
@@ -84,7 +86,7 @@ export default function ReviewCard({
       setLoading(false);
     }
   };
-
+  
   const handleCancel = () => {
     setEditing(false);
     setEditRating(rating);

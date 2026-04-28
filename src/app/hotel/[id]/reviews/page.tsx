@@ -84,6 +84,7 @@ export default function AllReviewsPage({
           : 0,
         starCounts: counts,
       });
+      console.log("Look at this data:", fetchedReviews[0]);
     } catch (err) {
       console.error("Failed to fetch data:", err);
     } finally {
@@ -260,14 +261,15 @@ export default function AllReviewsPage({
                 typeof review.user === "object" ? review.user._id : review.user;
               const userName =
                 typeof review.user === "object" ? review.user.name : "User";
-
+              const profileImageUrl =
+                typeof review.user === "object" ? review.user.profileImageUrl : '#0ea5e9';
               return (
                 <ReviewCard
                   key={review._id}
                   hotelId={id}
                   reviewId={review._id}
                   userName={userName}
-                  profileImageUrl=""
+                  profileImageUrl={profileImageUrl}
                   comment={review.comment}
                   rating={review.rating}
                   status={review.status}

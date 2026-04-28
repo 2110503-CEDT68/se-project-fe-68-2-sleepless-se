@@ -1,4 +1,4 @@
-export default async function updateBooking(id: string, checkInDate: string, checkOutDate: string, token: string) {
+export default async function updateBooking(id: string, checkInDate: string, checkOutDate: string, price: number, token: string) {
   const res = await fetch(`https://se-be-9w6y.onrender.com/api/v1/bookings/${id}`, {
     method: "PUT",
     headers: {
@@ -8,6 +8,7 @@ export default async function updateBooking(id: string, checkInDate: string, che
     body: JSON.stringify({
       checkInDate: checkInDate,
       checkOutDate: checkOutDate,
+      price: price,
     }),
   });
 

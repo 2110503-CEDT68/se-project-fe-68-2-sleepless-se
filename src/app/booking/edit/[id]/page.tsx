@@ -18,6 +18,9 @@ export default function EditBookingPage({ params }: { params: Promise<{ id: stri
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  const [pricePerNight, setPricePerNight] = useState(0);
+  const [hotelName, setHotelName] = useState("");
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push('/api/auth/signin');
@@ -35,9 +38,13 @@ export default function EditBookingPage({ params }: { params: Promise<{ id: stri
       const checkOut = new Date(booking.checkOutDate);
       const diffDays = Math.ceil(Math.abs(checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
 
+      setPricePerNight(booking.hotel?.price || 0);
+      setHotelName(booking.hotel?.hotel_name || "");
+
       setBookDate(checkIn.toISOString().split('T')[0]);
       setNights(diffDays);
       setLoading(false);
+
     } catch (error) {
       console.error(error);
       alert("Error loading booking data");
@@ -60,7 +67,8 @@ export default function EditBookingPage({ params }: { params: Promise<{ id: stri
       await updateBooking(
         bookingId, 
         checkIn.toISOString(), 
-        checkOut.toISOString(), 
+        checkOut.toISOString(),
+        totalPrice, 
         token
       );
 
@@ -90,6 +98,8 @@ export default function EditBookingPage({ params }: { params: Promise<{ id: stri
     ? new Date(new Date(bookDate).setDate(new Date(bookDate).getDate() + nights))
         .toISOString().split('T')[0]
     : null;
+
+  const totalPrice = pricePerNight * nights;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-sky-50 to-indigo-50 pt-28 py-16 px-4 flex items-center justify-center">
@@ -150,6 +160,13 @@ export default function EditBookingPage({ params }: { params: Promise<{ id: stri
             {bookDate && checkOutDate && (
               <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 space-y-2 text-sm">
                 <p className="text-sky-700 font-semibold">Booking Summary</p>
+                
+                {hotelName && (
+                  <div className="flex justify-between text-sky-800 mb-2 pb-2 border-b border-sky-100">
+                    <span className="font-bold">{hotelName}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-sky-600">
                   <span>Check-in</span>
                   <span className="font-medium">{bookDate}</span>
@@ -161,6 +178,16 @@ export default function EditBookingPage({ params }: { params: Promise<{ id: stri
                 <div className="flex justify-between text-sky-600">
                   <span>Duration</span>
                   <span className="font-medium">{nights} night{nights > 1 ? 's' : ''}</span>
+                </div>
+                
+                {/* Total Price Display */}
+                <div className="flex justify-between items-center pt-3 mt-2 border-t border-sky-200">
+                  <span className="text-slate-600 font-medium">
+                    Total Price {pricePerNight > 0 && <span className="text-slate-400 font-normal">(${pricePerNight} × {nights})</span>}
+                  </span>
+                  <span className="text-xl font-bold text-sky-700">
+                    ${totalPrice.toLocaleString()}
+                  </span>
                 </div>
               </div>
             )}
