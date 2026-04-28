@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import ModerationActions from "@/components/ModerationActions";
+import getHotels from "@/libs/getHotels";
+import getReviews from "@/libs/getReviews";
 import type { ReviewStatus } from "../../../../interface";
 import Link from "next/link";
 import ProfileIcon from "@/components/Profile/ProfileIcon";
@@ -72,26 +74,13 @@ export default function ModerationPage() {
     setLoading(true);
     setError(null);
     try {
-      //get hotels
-      const hotelsRes = await fetch(
-        "https://se-be-9w6y.onrender.com/api/v1/hotels",
-      );
-      if (!hotelsRes.ok) throw new Error("Failed to fetch hotels");
-      const hotelsData = await hotelsRes.json();
-      const hotels: any[] = hotelsData.data ?? [];
+      const hotels = await getHotels();
 
-      //fetch reviews
       const results = await Promise.all(
         hotels.map(async (hotel: any) => {
           try {
-            const res = await fetch(
-              `https://se-be-9w6y.onrender.com/api/v1/hotels/${hotel._id}/reviews`,
-              { cache: "no-store" },
-            );
-            if (!res.ok) return [];
-            const data = await res.json();
-            // 2. ส่งฟิลด์ reports และ isReported มาให้ครบ
-            return (data.data ?? []).map((r: any) => ({
+            const res = await getReviews(hotel._id);
+            return (res?.data ?? []).map((r: any) => ({
               ...r,
               hotel: { _id: hotel._id, hotel_name: hotel.hotel_name },
               isReported: r.isReported,
