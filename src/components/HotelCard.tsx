@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { Rating } from '@mui/material';
+import Image from "next/image";
+import Link from "next/link";
+import { Rating } from "@mui/material";
 
 interface HotelCardProps {
   hotelId: string;
@@ -10,6 +10,7 @@ interface HotelCardProps {
   imageURL: string;
   avgRating?: number;
   reviewCount?: number;
+  price: number;
 }
 
 export default function HotelCard({
@@ -20,13 +21,19 @@ export default function HotelCard({
   imageURL,
   avgRating = 0,
   reviewCount = 0,
+  price = 0,
 }: HotelCardProps) {
   return (
     <div className="bg-white rounded-[1.5rem] shadow-sm  overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group h-full border border-slate-200 w-full">
       {/* Image */}
       <div className="w-full h-[220px] relative bg-slate-100 overflow-hidden">
         {imageURL ? (
-          <Image src={imageURL} alt={hotelName} className="wobject-cover group-hover:scale-105 transition-transform duration-500" fill/>
+          <Image
+            src={imageURL}
+            alt={hotelName}
+            className="wobject-cover group-hover:scale-105 transition-transform duration-500"
+            fill
+          />
         ) : (
           <span className="font-bold text-slate-400 text-xl">No Photo</span>
         )}
@@ -42,10 +49,14 @@ export default function HotelCard({
                 readOnly
                 size="small"
                 precision={0.5}
-                sx={{ color: '#F59E0B' }}
+                sx={{ color: "#F59E0B" }}
               />
-              <span className="text-sm font-bold text-slate-700">{avgRating.toFixed(1)}</span>
-              <span className="text-xs text-slate-400 font-medium">({reviewCount})</span>
+              <span className="text-sm font-bold text-slate-700">
+                {avgRating.toFixed(1)}
+              </span>
+              <span className="text-xs text-slate-400 font-medium">
+                ({reviewCount})
+              </span>
             </div>
           ) : (
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
@@ -56,7 +67,9 @@ export default function HotelCard({
 
         {/* Info */}
         <div className="space-y-1">
-          <h3 className="text-xl font-black text-[#1E293B] truncate leading-tight">{hotelName}</h3>
+          <h3 className="text-xl font-black text-[#1E293B] truncate leading-tight">
+            {hotelName}
+          </h3>
           <div className="space-y-1.5 pt-1">
             <p className="text-sm text-slate-500 flex items-center gap-2">
               <span className="text-rose-500 shrink-0">📍</span>
@@ -66,6 +79,9 @@ export default function HotelCard({
               <span className="text-rose-500 shrink-0">📞</span>
               <span>{telephone}</span>
             </p>
+            <div className="font-bold text-green-600 text-xl flex justify-end">
+              {price} THB
+            </div>
           </div>
         </div>
 

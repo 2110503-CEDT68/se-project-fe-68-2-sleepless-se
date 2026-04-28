@@ -153,6 +153,7 @@ export default function HotelCatalog() {
                       imageURL={hotel.imageURL}
                       avgRating={ratings[hotel._id]?.avgRating ?? 0}
                       reviewCount={ratings[hotel._id]?.reviewCount ?? 0}
+                      price={hotel.price}
                     />
                   ))}
               </div>
