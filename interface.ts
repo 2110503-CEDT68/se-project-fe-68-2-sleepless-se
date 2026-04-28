@@ -117,6 +117,7 @@ export type ReviewStatus = "active" | "hidden" | "rejected";
 
 export interface ModerationActionsProps {
   reviewId: string;
+  hotelId: string;
   currentStatus: ReviewStatus;
   token: string;
   onActionComplete: (

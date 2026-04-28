@@ -1,22 +1,23 @@
 "use client";
 
 import { useState } from "react";
-// นำเข้า Interface เดิมของคุณ (คุณอาจจะต้องไปเพิ่มฟิลด์ reports ใน Interface ด้วย)
+
 import type { ModerationActionsProps } from "../../interface";
 import React from "react";
 
-// สร้าง Interface เสริมสำหรับรับค่า reports
 interface ExtendedModerationProps extends ModerationActionsProps {
+  hotelId: string;
   reports?: { reason: string; user?: string }[];
   isReported?: boolean;
 }
 
 export default function ModerationActions({
   reviewId,
+  hotelId,
   currentStatus,
   token,
   onActionComplete,
-  reports, // รับค่า reports ที่แถมมาด้วย
+  reports,
   isReported,
 }: ModerationActionsProps) {
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ export default function ModerationActions({
     setError(null);
     try {
       const res = await fetch(
-        `https://se-be-9w6y.onrender.com/api/v1/reviews/${reviewId}/reject`,
+        `https://se-be-9w6y.onrender.com/api/v1/hotels/${hotelId}/reviews/${reviewId}/reject`,
         { method: "PUT", headers: { Authorization: `Bearer ${token}` } },
       );
       if (!res.ok) {
@@ -84,7 +85,6 @@ export default function ModerationActions({
         </span>
       )}
 
-      {/* ปุ่ม Delete เดิม */}
       <button
         onClick={handleDelete}
         disabled={loading}

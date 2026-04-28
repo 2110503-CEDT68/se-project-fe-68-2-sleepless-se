@@ -12,7 +12,7 @@ import ProfileIcon from "@/components/Profile/ProfileIcon";
 interface ReviewItem {
   _id: string;
   hotel: { _id: string; hotel_name: string } | string;
-  user: { _id: string; name: string; profileImageUrl?: string} | string;
+  user: { _id: string; name: string; profileImageUrl?: string } | string;
   rating: number;
   comment: string;
   status?: ReviewStatus;
@@ -95,7 +95,7 @@ export default function ModerationPage() {
               ...r,
               hotel: { _id: hotel._id, hotel_name: hotel.hotel_name },
               isReported: r.isReported,
-              reports: r.reports
+              reports: r.reports,
             }));
           } catch {
             return [];
@@ -145,18 +145,17 @@ export default function ModerationPage() {
     );
   }
 
-
   return (
     <div className="min-h-screen bg-slate-100 pt-28 pb-10 px-4 flex flex-col items-center">
       <div className="flex flex-col gap-4 mx-auto max-w-3xl">
         {/* Header */}
         <div className=" flex flex-col gap-1">
-            <h1 className="text-2xl font-extrabold text-[#0c4a6e]">
-              Review Moderation Dashboard
-            </h1>
-            <p className="text-slate-400 text-sm mt-0.5">
-              {reviews.length} review{reviews.length !== 1 ? "s" : ""} total
-            </p>
+          <h1 className="text-2xl font-extrabold text-[#0c4a6e]">
+            Review Moderation Dashboard
+          </h1>
+          <p className="text-slate-400 text-sm mt-0.5">
+            {reviews.length} review{reviews.length !== 1 ? "s" : ""} total
+          </p>
         </div>
 
         <input
@@ -182,12 +181,14 @@ export default function ModerationPage() {
               </p>
             ) : (
               filtered.map((review) => {
-                console.log("prinitng out user")
+                console.log("prinitng out user");
                 console.log(review.user);
                 const userName =
                   typeof review.user === "object" ? review.user.name : "User";
                 const profileURL =
-                  typeof review.user === "object" ? review.user.profileImageUrl : "User";
+                  typeof review.user === "object"
+                    ? review.user.profileImageUrl
+                    : "User";
                 const hotelName =
                   typeof review.hotel === "object"
                     ? review.hotel.hotel_name
@@ -228,10 +229,10 @@ export default function ModerationPage() {
                     </div>
                     <ModerationActions
                       reviewId={review._id}
+                      hotelId={hotelId}
                       currentStatus={review.status ?? "active"}
                       token={(session?.user as any)?.token ?? ""}
                       onActionComplete={handleActionComplete}
-                      // 3. ส่ง Props เพิ่มเติมไปให้ ModerationActions
                       isReported={review.isReported}
                       reports={review.reports}
                     />
