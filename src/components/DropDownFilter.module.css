@@ -1,0 +1,16 @@
+.DropDownStyle{
+    border-radius: 0.5rem;
+}
+
+.DropDownStyle::-webkit-scrollbar{
+    width: 5px;
+}
+
+.DropDownStyle::-webkit-scrollbar-track{
+    background: #f3f4f6;
+}
+
+.DropDownStyle::-webkit-scrollbar-thumb{
+    background: hsl(202, 26%, 73%);
+    border-radius: 2rem;
+}

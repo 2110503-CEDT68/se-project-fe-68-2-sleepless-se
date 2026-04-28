@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Hotel } from "../../interface";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import styles from "./DropDownFilter.module.css";
 
 export default function DropDownFilter({
   FilterBy,
@@ -44,11 +45,11 @@ export default function DropDownFilter({
         </div>
         {/* list filter */}
         {isMulti && (
-          <div className="bg-white absolute z-50 shadow-lg w-full max-h-60 overflow-y-auto">
+          <div className={`bg-white absolute z-50 shadow-lg w-full max-h-60 overflow-y-auto border border-slate-200 ${styles.DropDownStyle}`}>
             {mockOptions.map((option) => (
               <div
                 key={option}
-                className="hover:bg-gray-100 transition-colors cursor-pointer p-2"
+                className="hover:bg-blue-50 transition-colors cursor-pointer p-2"
                 onClick={() => {
                   openBy("");
                   onOptionSelect(option);

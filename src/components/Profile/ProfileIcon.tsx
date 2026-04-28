@@ -15,6 +15,8 @@ export default function ProfileIcon({
   const initial = name && name !== 'No Name Provided' ? name.charAt(0).toUpperCase() : '?';
   const bgColor = color || '#0ea5e9'; 
 
+  console.log(initial + " : " + bgColor);
+
   return (
     <div 
       style={{ backgroundColor: bgColor }}

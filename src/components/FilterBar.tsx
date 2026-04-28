@@ -73,7 +73,7 @@ export default function FilterBar({
     );
   });
   return (
-    <div className="sticky top-[12%] self-start font-medium text-lg text-gray-700 flex flex-col gap-2 bg-white shadow-lg md:w-1/6 min-w-[200px] w-full p-5 m-2 rounded-lg z-10 relative ">
+    <div className="sticky top-[12%] self-start font-medium text-lg text-gray-700 flex flex-col gap-2 bg-white shadow-sm md:w-1/6 min-w-[200px] w-full p-5 m-2 rounded-lg z-10 relative border border-slate-200 ">
       {/* header */}
       <div className="flex flex-row relative">
         <div className="font-bold text-2xl text-blue-900">Filter</div>

@@ -103,6 +103,9 @@ export default function ReviewCard({
       </span>
     ) : null;
 
+    console.log(userName + profileImageUrl);
+    
+
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm flex gap-4 items-start w-full border border-slate-200">
       {/* Avatar */}
