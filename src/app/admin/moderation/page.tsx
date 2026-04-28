@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import ModerationActions from "@/components/ModerationActions";
 import type { ReviewStatus } from "../../../../interface";
+import Link from "next/link";
+import ProfileIcon from "@/components/Profile/ProfileIcon";
 
 // 1. เพิ่มฟิลด์ isReported และ reports ลงใน Interface
 interface ReviewItem {
   _id: string;
   hotel: { _id: string; hotel_name: string } | string;
-  user: { _id: string; name: string } | string;
+  user: { _id: string; name: string; profileImageUrl?: string} | string;
   rating: number;
   comment: string;
   status?: ReviewStatus;
@@ -143,19 +145,18 @@ export default function ModerationPage() {
     );
   }
 
+
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-16 px-4">
-      <div className="max-w-3xl mx-auto space-y-4">
+    <div className="min-h-screen bg-slate-100 pt-28 pb-10 px-4 flex flex-col items-center">
+      <div className="flex flex-col gap-4 mx-auto max-w-3xl">
         {/* Header */}
-        <div className="pt-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-extrabold text-slate-800">
+        <div className=" flex flex-col gap-1">
+            <h1 className="text-2xl font-extrabold text-[#0c4a6e]">
               Review Moderation Dashboard
             </h1>
             <p className="text-slate-400 text-sm mt-0.5">
               {reviews.length} review{reviews.length !== 1 ? "s" : ""} total
             </p>
-          </div>
         </div>
 
         <input
@@ -181,35 +182,50 @@ export default function ModerationPage() {
               </p>
             ) : (
               filtered.map((review) => {
+                console.log("prinitng out user")
+                console.log(review.user);
                 const userName =
                   typeof review.user === "object" ? review.user.name : "User";
+                const profileURL =
+                  typeof review.user === "object" ? review.user.profileImageUrl : "User";
                 const hotelName =
                   typeof review.hotel === "object"
                     ? review.hotel.hotel_name
                     : "";
+                const hotelId =
+                  typeof review.hotel === "object" ? review.hotel._id : "";
 
                 return (
                   <div
                     key={review._id}
-                    className="flex items-center gap-3 px-4 py-4"
+                    className="flex items-start align-center gap-4 p-6 flex-col md:flex-row"
                   >
-                    <AvatarInitial name={userName} />
+                    <div className="flex items-start gap-4  flex-col md:flex-row w-full">
+                      <div className="flex flex-row gap-4 flex-1 w-full">
+                        <ProfileIcon name={userName} color={profileURL} />
 
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-700 text-sm">
-                        {userName}
-                      </p>
-                      {hotelName && (
-                        <p className="text-[11px] text-sky-600 mb-0.5">
-                          {hotelName}
-                        </p>
-                      )}
-                      <p className="text-xs text-slate-400 italic truncate">
-                        "{review.comment}"
-                      </p>
-                      <StarRow rating={review.rating} />
+                        <div className="flex flex-col flex-1 min-w-0 w-full">
+                          <div className="flex flex-col mb-2 rounded-[0.5rem] p-3 border border-slate-200 w-full">
+                            <StarRow rating={review.rating} />
+                            <p className="text-xs text-slate-400 italic break-words">
+                              "{review.comment}"
+                            </p>
+                          </div>
+
+                          <p className="text-slate-700 text-xs ml-2">
+                            <strong>comment by :</strong> {userName}
+                          </p>
+
+                          {hotelName && (
+                            <Link href={`/hotel/${hotelId}`}>
+                              <p className="text-sky-600 mb-0.5 text-xs ml-2">
+                                <strong>From :</strong> {hotelName}
+                              </p>
+                            </Link>
+                          )}
+                        </div>
+                      </div>
                     </div>
-
                     <ModerationActions
                       reviewId={review._id}
                       currentStatus={review.status ?? "active"}
@@ -229,7 +245,7 @@ export default function ModerationPage() {
         {/* End label */}
         {filtered.length > 0 && (
           <p className="text-center text-slate-300 text-xs italic">
-            — End of reviews —
+            — End of reported reviews —
           </p>
         )}
       </div>

@@ -43,7 +43,7 @@ export default function ModerationActions({
   };
 
   return (
-    <div className="flex flex-col items-end gap-2 w-full max-w-[250px]">
+    <div className="flex flex-col items-end gap-2 w-full md:max-w-[250px]">
       
      
       {isReported && reports && reports.length > 0 && (
@@ -70,7 +70,7 @@ export default function ModerationActions({
       <button
         onClick={handleDelete}
         disabled={loading}
-        className="px-3 py-1.5 rounded-md text-xs font-semibold bg-red-400 hover:bg-red-500 text-white transition-colors disabled:opacity-50 w-20 text-center shadow-sm"
+        className="w-[100%] md:w-[70px] px-3 py-1.5 rounded-md text-xs font-semibold bg-red-400 hover:bg-red-500 text-white transition-colors disabled:opacity-50 w-20 text-center shadow-sm"
       >
         {loading ? "…" : "Delete"}
       </button>
