@@ -98,7 +98,7 @@ export default function ModerationActions({
         disabled={loading}
         className="w-[100%] md:w-[70px] px-3 py-1.5 rounded-md text-xs font-semibold bg-blue-400 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 w-20 text-center shadow-sm"
       >
-        {loading ? "…" : "Reject"}
+        {loading ? "…" : currentStatus === "rejected" ? "Rejected" : "Reject"}
       </button>
     </div>
   );
