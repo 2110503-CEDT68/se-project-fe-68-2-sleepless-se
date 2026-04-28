@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import type { ModerationActionsProps } from "../../interface";
+import rejectReview from "@/libs/rejectReview";
 import React from "react";
 
 interface ExtendedModerationProps extends ModerationActionsProps {
@@ -49,14 +50,7 @@ export default function ModerationActions({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `https://se-be-9w6y.onrender.com/api/v1/hotels/${hotelId}/reviews/${reviewId}/reject`,
-        { method: "PUT", headers: { Authorization: `Bearer ${token}` } },
-      );
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to reject");
-      }
+      await rejectReview(hotelId, reviewId, token);
       onActionComplete(reviewId, "reject");
     } catch (err: any) {
       setError(err.message);
