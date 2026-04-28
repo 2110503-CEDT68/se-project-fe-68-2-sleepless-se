@@ -3,6 +3,7 @@
 import { useState } from "react";
 // นำเข้า Interface เดิมของคุณ (คุณอาจจะต้องไปเพิ่มฟิลด์ reports ใน Interface ด้วย)
 import type { ModerationActionsProps } from "../../interface";
+import React from "react";
 
 // สร้าง Interface เสริมสำหรับรับค่า reports
 interface ExtendedModerationProps extends ModerationActionsProps {
@@ -17,7 +18,7 @@ export default function ModerationActions({
   onActionComplete,
   reports, // รับค่า reports ที่แถมมาด้วย
   isReported,
-}: ExtendedModerationProps) {
+}: ModerationActionsProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +29,7 @@ export default function ModerationActions({
     try {
       const res = await fetch(
         `https://se-be-9w6y.onrender.com/api/v1/reviews/${reviewId}`,
-        { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
+        { method: "DELETE", headers: { Authorization: `Bearer ${token}` } },
       );
       if (!res.ok) {
         const data = await res.json();
@@ -42,10 +43,28 @@ export default function ModerationActions({
     }
   };
 
+  const handleReject = async () => {
+    if (!confirm("Reject this review? It will be marked as rejected.")) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(
+        `https://se-be-9w6y.onrender.com/api/v1/reviews/${reviewId}/reject`,
+        { method: "PUT", headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to reject");
+      }
+      onActionComplete(reviewId, "reject");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col items-end gap-2 w-full md:max-w-[250px]">
-      
-     
       {isReported && reports && reports.length > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-md p-2.5 w-full text-left">
           <div className="text-red-700 font-bold text-xs flex items-center gap-1 mb-1.5">
@@ -59,7 +78,6 @@ export default function ModerationActions({
         </div>
       )}
 
-    
       {error && (
         <span className="text-xs text-red-500 text-right" role="alert">
           {error}
@@ -73,6 +91,14 @@ export default function ModerationActions({
         className="w-[100%] md:w-[70px] px-3 py-1.5 rounded-md text-xs font-semibold bg-red-400 hover:bg-red-500 text-white transition-colors disabled:opacity-50 w-20 text-center shadow-sm"
       >
         {loading ? "…" : "Delete"}
+      </button>
+
+      <button
+        onClick={handleReject}
+        disabled={loading}
+        className="w-[100%] md:w-[70px] px-3 py-1.5 rounded-md text-xs font-semibold bg-blue-400 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 w-20 text-center shadow-sm"
+      >
+        {loading ? "…" : "Reject"}
       </button>
     </div>
   );

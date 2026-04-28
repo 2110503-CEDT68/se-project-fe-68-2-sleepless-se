@@ -24,7 +24,7 @@ export type HotelUpdateData = {
   region: string;
   postalcode: string;
   district: string;
-  price:number;
+  price: number;
 };
 
 export interface HotelJson {
@@ -93,7 +93,7 @@ export type RatingDistributionBarProps = {
   avgRating: number;
   onStarClick?: (star: number) => void;
   selectedStar?: number | null;
-  imageURL?: string; 
+  imageURL?: string;
 };
 // ─── Profile ──────────────────────────────────────────────────────────────────
 export interface ProfileViewProps {
@@ -123,4 +123,6 @@ export interface ModerationActionsProps {
     reviewId: string,
     action: "delete" | "hide" | "unhide" | "reject" | "approve",
   ) => void;
+  isReported?: boolean;
+  reports?: { reason: string; user?: string }[];
 }
